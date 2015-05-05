@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <link rel="stylesheet" href="./public/main.css"></head>
+    <style></style>
+<body>
+    <script>
+        // if(!~location.href.indexOf('hid=')) {
+        //     setTimeout(function() {
+        //         var appProtocolLink = "sogoumsesdk://showtip?url=10.14.129.224/news/index.html"; //
+        //         var ifr = document.createElement("iframe");
+        //         ifr.src = appProtocolLink;
+        //         document.body.appendChild(ifr);
+        //         ifr.style["width"] = "0px";
+        //         ifr.style["height"] = "0px";
+        //         ifr.style["border"] = "0px";
+        //         window.setTimeout(function() {
+        //             ifr.remove();
+        //         }, 100);
+        //         },100);
+        // }
+        </script>
+    <div id="container">
+        <div class="labelChange">
+            <ul class="selected"></ul>
+            <div class="sg-edit-icon">
+                <img src="./public/img/mengban.png" alt="">
+                <span id="sg-edit-text">
+                    <span></span>
+                </span>
+            </div>
+        </div>
+
+        <div id="callback-wrapper">
+            <div id="callback-msg">暂无新推荐</div>
+        </div>
+        <div id="pulldown-msg-wrapper">
+            <div id="pulldown-msg"> <i class="icon icon-arrow icon-arrow-down"></i>
+                <span class="msg">下拉刷新</span>
+            </div>
+        </div>
+        <section class="sg-list"></section>
+        <footer class="load-more"></footer>
+        <svg class="svg" width=40 height=40>
+          <circle cx=20 cy=20 r=10 />
+        </svg>
+        <div id="toTop"></div>
+    </div>
+    <article id="article" class="sg-mask sg-hide">
+        <div class="sg-news">
+            <span class="sg-turn-back"></span>
+            <div class="sg-article-container"></div>
+        </div>
+        <svg class="svg" width=40 height=40>
+          <circle cx=20 cy=20 r=10 />
+        </svg>
+    </article>
+    <section id="edit" class="sg-edit sg-hide">
+        <header>频道编辑</header>
+        <span id="sg-edit-finish"></span>
+        <div class="sg-edit-group">
+            <ul>
+                <li>
+                    <div class="sg-headlines"> <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/1.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">头条</span>
+                            <span class="sg-eidt-title-eng">Headlines</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-military">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/2.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">军事</span>
+                            <span class="sg-eidt-title-eng">Military</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-society">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/3.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">社会</span>
+                            <span class="sg-eidt-title-eng">Society</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-entertainment">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/4.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">娱乐</span>
+                            <span class="sg-eidt-title-eng">Entertainment</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-business">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/5.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">商业</span>
+                            <span class="sg-eidt-title-eng">Business</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-nBA">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/6.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">nba</span>
+                            <span class="sg-eidt-title-eng">NBA</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-football">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/7.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">国际足球</span>
+                            <span class="sg-eidt-title-eng">Football</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-car">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/8.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">汽车</span>
+                            <span class="sg-eidt-title-eng">Car</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-history">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/9.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">历史</span>
+                            <span class="sg-eidt-title-eng">History</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-stock">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/10.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">股票</span>
+                            <span class="sg-eidt-title-eng">Stock</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-women">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/11.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">女性时尚</span>
+                            <span class="sg-eidt-title-eng">Women</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-emotion">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/12.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">情感</span>
+                            <span class="sg-eidt-title-eng">Emotion</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-digital">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/13.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">数码</span>
+                            <span class="sg-eidt-title-eng">Digital</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-health">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/14.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">保健</span>
+                            <span class="sg-eidt-title-eng">Health</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-internet">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/15.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">互联网</span>
+                            <span class="sg-eidt-title-eng">Internet</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-constellation">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/16.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">星座</span>
+                            <span class="sg-eidt-title-eng">Constellation</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-parenting">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/17.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">育儿</span>
+                            <span class="sg-eidt-title-eng">Parenting</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-travel">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/18.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">旅游</span>
+                            <span class="sg-eidt-title-eng">Travel</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-film">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/19.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">电影</span>
+                            <span class="sg-eidt-title-eng">Film</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-reading">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/20.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">读书</span>
+                            <span class="sg-eidt-title-eng">Reading</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-food">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/21.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">美食</span>
+                            <span class="sg-eidt-title-eng">Food</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-technology">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/22.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">科学</span>
+                            <span class="sg-eidt-title-eng">Technology</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-originality">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/23.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">创意</span>
+                            <span class="sg-eidt-title-eng">Originality</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-home">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/24.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">家居</span>
+                            <span class="sg-eidt-title-eng">Home</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-fishing">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/25.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">钓鱼</span>
+                            <span class="sg-eidt-title-eng">Fishing</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-photography">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/26.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">摄影</span>
+                            <span class="sg-eidt-title-eng">Photography</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-carton">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/27.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">动漫</span>
+                            <span class="sg-eidt-title-eng">Carton</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-flower">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/28.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">养花</span>
+                            <span class="sg-eidt-title-eng">Flower</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-riding">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/29.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">骑行</span>
+                            <span class="sg-eidt-title-eng">Riding</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-handmade">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/30.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">手工</span>
+                            <span class="sg-eidt-title-eng">Handmade</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-tCM">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/31.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">中医</span>
+                            <span class="sg-eidt-title-eng">TCM</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-running">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/32.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">跑步</span>
+                            <span class="sg-eidt-title-eng">Running</span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="sg-collection">
+                        <i class="label"></i>
+                        <div class="sg-musk-container">
+                            <img src="./public/img/33.png" alt="">
+                            <div class="sg-edit-musk"></div>
+                        </div>
+                        <div class="sg-select-keyWord">
+                            <span class="sg-edit-title">收藏</span>
+                            <span class="sg-eidt-title-eng">Collection</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+    <script id="sg-list-item" type="text/html">
+        <h1>{{title}}</h1>
+        <ul>
+            {{each list as value i}}
+                <li>索引 {{i + 1}} ：{{value}}</li>
+            {{/each}}
+        </ul>
+    </script>
+    <script src="./public/script/channelData.js"></script>
+    <script src="./public/script/scroll.js"></script>
+    <script src="./public/script/artTemplate.js"></script>
+    <script src="./public/script/main.js"></script>
+</body>
+</html>
