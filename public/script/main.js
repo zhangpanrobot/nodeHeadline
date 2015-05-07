@@ -10,6 +10,11 @@ listRender({
 });
 */
 
+
+//http://discover.ie.sogou.com/discover_agent?h=8ea3f681-58ab-1f4b-0c9f-eeeec1bce883&cmd=getlist&phone=1&count=20&lastindex=undefined&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
+//http://discover.ie.sogou.com/discover_agent?h=4b950c35-6828-928f-4e39-9b76b78597bd&cmd=getlist&phone=1&count=20&lastindex=0&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
+
+
 //根据json渲染editer
 function renderEdit(){
 
@@ -357,7 +362,7 @@ var globalObj = {
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
 		if (currentLabel == '头条') {
-			index = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].length;
+			index = config.listArray[config.currentLabel].data && config.listArray[config.currentLabel].data.length;
 		} else {
 			index = this.getLastIndex(!config.direction)[0];
 		}
@@ -372,9 +377,9 @@ var globalObj = {
 		try {
 			urls = data.app_cmd[0].cmd[0].user_recomm_info[0].url_infos;
 			this.pingback('listAllUrl', this.uuid, {
-				url: urls.map(function(item) {
-					return item.url;
-				}).join(),
+				// url: urls.map(function(item) {
+				// 	return item.url;
+				// }).join(),
 				time: new Date().getTime() - this.listTime,
 				currentLabel: config.currentLabel
 			});
@@ -384,7 +389,8 @@ var globalObj = {
 			emptyStyle(this.eleData.sgList);
 			return this.showUp(0);
 		}
-		currentLabelList = config.listArray[config.currentLabel];
+		currentLabelList = config.listArray[config.currentLabel]||{};
+		currentLabelList.data = currentLabelList.data||[];
 		if (data.app_cmd[0].cmd[0].user_recomm_info[0] + '' == 'null') {
 			//alert('haha');
 		}
@@ -454,6 +460,12 @@ var globalObj = {
 		//$('.default-loading') && removeElement($('.default-loading'));
 		var allImg = articleContainer.querySelectorAll('img');
 		allP = articleContainer.querySelectorAll('p');
+		function getOrigin(url){
+			var a = document.createElement('a');
+			a.href = url;
+			return a.hostname;
+		}
+		var articleOrigin = location.hash.split('#article?=')[1];
 		/*todo元素里的style属性*/
 		for (var i = allImg.length - 1; i >= 0; i--) {
 			var currentImg = allImg[i],
@@ -467,6 +479,10 @@ var globalObj = {
 				next.style.color = '#aaa';
 			} else if (alt && alt == (nextParent && nextParent.innerText)) {
 				nextParent.style.color = '#aaa';
+			}
+			//图片是相对路径
+			if(currentImg.src.indexOf('/') == 0) {
+				currentImg.src = getOrigin(articleOrigin) + currentImg.src;
 			}
 		}
 		for (var i = allP.length - 1; i >= 0; i--) {
@@ -504,16 +520,16 @@ var globalObj = {
 		container.style.minHeight = self.viewHeight + 'px';
 		if ((location.hash.length && location.hash.slice(1))) {
 			if (location.hash.length) {
-				var lable = decodeURIComponent(~location.hash.indexOf('&label=') ? location.hash.slice(1).match(/label=(.*)[&\s\n]?/) && location.hash.slice(1).match(/label=(.*)[&\s\n]?/)[1] : location.hash.slice(1));
+				var lable = decodeURIComponent(~location.hash.indexOf('&label=') ? location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/) && location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/)[1] : location.hash.slice(1));
 			}
-			config.listArray[lable] = [];
+			config.listArray[lable] = {};
 			$('[href="#' + lable + '"]') && ($('[href="#' + lable + '"]').parentNode.className = 'current');
 		} else {
-			config.listArray["头条"] = [];
+			config.listArray["头条"] = {};
 			$('.selected li') && ($('.selected li').className = 'current');
 		}
-		if (location.href.match(/hid=(.*?(?=[&\n]))/)) {
-			self.uuid = url.match(/hid=(.*?($|(?=&))/)[1];
+		if (location.href.match(/hid=(.*?(?=(&|\n)))/)) {
+			//self.uuid = url.match(/hid=(.*?($|(?=&))/)[1];
 		} else {
 			self.uuid = localStorage.getItem('uuid');
 		}
@@ -542,12 +558,13 @@ var globalObj = {
 			opeInfo.change = true;
 			opeInfo.direction = false;
 			opeInfo.num = 0;
+			emptyElement($('.load-more'));
 			$('.selected .current') && ($('.selected .current').className = '');
 			emptyElement(self.eleData.sgList);
 			label.scrollIntoView();							
 			location.hash = e.target.getAttribute('data-tag');
 			config.currentLabel = e.target.getAttribute("data-tag").toLowerCase();
-			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || [];
+			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
 			currentLabelList = config.listArray[config.currentLabel];
 			if (currentLabelList.length) { //已缓存
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
@@ -649,7 +666,7 @@ var globalObj = {
 							//article.insertBefore(currentTag.children[0].cloneNode(true), articleContainer);
 							//$('.big img', article).style.maxWidth = '200%';
 						}
-						articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time">' + (currentTag.querySelector('.time') && currentTag.querySelector('.time').innerText) + '</span></h2>';
+						articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
 					}
 				}
 				articleRenderSet();
@@ -705,9 +722,7 @@ var globalObj = {
 			localStorage.setItem('itemChoose', JSON.stringify(editData));
 		});
 		$('#sg-edit-finish').addEventListener('click', function(e) {
-			//localStorage.setItem('itemChoose', JSON.stringify(editData));
 			container.className = '';
-			//container.style.cssText = '';
 			addClass(edit, 'sg-hide');
 			emptyElement($('.load-more'));
 			self.renderSelected();
@@ -792,9 +807,9 @@ var globalObj = {
 	},
 	getLastIndex: function(bool) { //true时取最大值
 		//注意, 这里是引用值, 直接用slice会改变原有对象
-		var currentList = JSON.parse(JSON.stringify(this.config.listArray[this.config.currentLabel]));
+		var currentList = JSON.parse(JSON.stringify(this.config.listArray[this.config.currentLabel].data||({})));
 		if (currentList.length) {
-			var currentItem = bool ? currentList.shift().shift() : currentList.pop().pop();
+			var currentItem = !bool ? currentList.shift().shift() : currentList.pop().pop();
 			return [currentItem.index, currentItem.publish_time];
 		} else {
 			return [undefined, 0];
