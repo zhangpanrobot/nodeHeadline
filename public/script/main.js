@@ -141,7 +141,7 @@ var globalObj = {
 		sgList: $('.sg-list')
 	},
 	opeInfo: {
-		change: false,
+		change: false, //是否切标签
 		direction: false, //方向
 		num: 0
 	},
@@ -149,7 +149,7 @@ var globalObj = {
 		"hot": "热门",
 		"editor": "精品"
 	},
-	guid: (function() {
+	guid: (function() {//生成uuid
 		function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000)
 				.toString(16)
@@ -169,7 +169,7 @@ var globalObj = {
 		};
 		img.src = baseUrl;
 	},
-	createScript: function(url) {
+	createScript: function(url) {//jsonp
 		var script = document.createElement('script');
 		script.src = url;
 		this.dbody.appendChild(script);
@@ -178,10 +178,13 @@ var globalObj = {
 		}, 5000);
 	},
 	config: {
+		//当前时间(服务器时间)
 		currentTime: 0,
+		//当前频道
 		currentLabel: decodeURIComponent(~location.hash.indexOf('&label=') ? location.hash.slice(1).match(/label=(.*)[&\s\n]?/) && location.hash.slice(1).match(/label=(.*)[&\s\n]?/)[1] : location.hash.slice(1)) || '头条',
 		iconType: location.href.match(/iconType=([a-zA-Z0-9]*)/) && location.href.match(/iconType=([a-zA-Z0-9]*)/)[1],
-		listArray: {} //每个频道的内容
+		//每个频道的内容及频道最后一次请求新数据的时间
+		listArray: {}
 	},
 	loadMoreText: function(bool) {
 		$('.load-more').innerHTML = bool ? '<span>正在加载...</span>' : '';
@@ -219,16 +222,6 @@ var globalObj = {
 		removeClass(sup, 'sg-hide');
 		addClass(sub, 'sg-hide');
 		sub.style.height = this.viewHeight + 'px';
-	},
-	listLoadingView: function() {
-		var loadingView = document.createElement('div');
-		loadingView.className = 'sg-list-loading';
-		loadingView.style.cssText = 'height:' + (self.viewHeight - self.labelHeight) + 'px;top:' + (self.labelHeight + 2) + 'px';
-		self.eleData.container.appendChild(loadingView);
-		//this.eleData.container.innerHTML += '<div class="default-loading"></div>';
-	},
-	deleteLoadingView: function() {
-		removeElement($('.default-loading'));
 	},
 	//渲染频道
 	renderSelected: function() {
