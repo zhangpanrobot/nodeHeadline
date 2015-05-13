@@ -162,7 +162,7 @@ var globalObj = {
 	})(),
 	pingback: function(type, hid, obj) {
 		var img = document.createElement('img');
-		var baseUrl = 'http://ping.ie.sogou.com/news.gif?src=h5&type=' + type + '&hid=' + hid;
+		var baseUrl = 'http://ping.hotspot.ie.sogou.com/news.gif?src=h5&type=' + type + '&hid=' + hid;
 		var keys = Object.keys(obj);
 		for (var i = keys.length - 1; i >= 0; i--) {
 			baseUrl += '&' + keys[i] + '=' + obj[keys[i]];

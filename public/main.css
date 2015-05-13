@@ -220,15 +220,15 @@ ul.article li{
 }
 .article .three li{
   float: left;
-  margin-left: 1px;
-  padding-top: 33%;
-  width: 33%;
+  margin-left: 5%;
+  padding-top: 30%;
+  width: 30%;
   background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   -webkit-background-size: cover;
 }
-.article .three li: first-child{
+.article .three li:first-child{
   margin-left: 0;
 }
 .three li:first-child>div{  

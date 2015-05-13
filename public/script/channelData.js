@@ -111,24 +111,8 @@ var editData = [{
     eng: 'Carton',
     val: false
 }, {
-    name: '养花',
-    eng: 'Flower',
-    val: false
-}, {
-    name: '骑行',
-    eng: 'Riding',
-    val: false
-}, {
-    name: '手工',
-    eng: 'Handmade',
-    val: false
-}, {
     name: '中医',
     eng: 'TCM',
-    val: false
-}, {
-    name: '跑步',
-    eng: 'Running',
     val: false
 }, {
     name: '收藏',
