@@ -617,19 +617,17 @@ var globalObj = {
 				time: +new Date().getTime() - (+self.startTime)
 			});
 		};
-		self.dbody.addEventListener('touchstart', function(e) {
+		self.dbody.addEventListener('click', function(e) {
 			var target = e.target;
 			if (target.className == 'sg-return') {
 				history.back();
 			}
-		});
-		self.dbody.addEventListener('click', function(e) {
-			var target = e.target;
 			if($('.sg-girl') && target.tagName == 'IMG') {
 				$('#photo-mask').innerHTML = '';
 				$('#photo-mask').classList.toggle('sg-hide');
 				$('#photo-mask').appendChild(target.cloneNode(true));
 				container.classList.toggle('noScroll');
+				return true;
 			}
 		});
 		function articleRenderSet() {
@@ -829,8 +827,8 @@ var globalObj = {
 	pullToRefresh: {
 		init: function() {
 			var self = this,
-				eleData = self.eleData
-			sgList = eleData.sgList,
+				eleData = self.eleData,
+				sgList = eleData.sgList,
 				pulldownMsg = $('#pulldown-msg'),
 				container = eleData.container,
 				pulldownMsgIcon = $('#pulldown-msg i'),
