@@ -748,7 +748,7 @@ figure{
 .sg-girl h2{
   margin: 18px 0 13px 0;
 }
-#photo-mast{
+#photo-mask{
   position: absolute;
   z-index: 300;
   top: 0;
@@ -759,7 +759,17 @@ figure{
   background: rgba(0, 0, 0, .8) no-repeat center center;
   background-size: contain;
 }
-
+#photo-mask.sg-hide{
+  z-index: 0;
+}
+#photo-mask img{
+  position: absolute;
+  top: 0;
+  left:0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
 
 
 

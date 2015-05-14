@@ -626,9 +626,9 @@ var globalObj = {
 		self.dbody.addEventListener('click', function(e) {
 			var target = e.target;
 			if($('.sg-girl') && target.tagName == 'IMG') {
-				$('#photo-mast').classList.toggle('sg-hide');
-				$('#photo-mast').style.backgroundImage = 'url(' + target.src + ')';
-				//$('#photo-mast').appendChild(target.clone(true));
+				$('#photo-mask').innerHTML = '';
+				$('#photo-mask').classList.toggle('sg-hide');
+				$('#photo-mask').appendChild(target.cloneNode(true));
 				container.classList.toggle('noScroll');
 			}
 		});
