@@ -229,7 +229,7 @@ var globalObj = {
 		var self = this;
 		//当前频道是否被删除
 		var currentDeleted = false;
-		editData.forEach(function(item) {
+		editData.forEach(function(item, index) {
 			if (item.val) {
 				var itemText = item.abbr ? item.abbr : item.name;
 				str += '<li class="' + (self.config.currentLabel == item.name ? 'current' : '') + '"><a data-tag="' + item.name + '" href="#' + item.name + '">' + itemText + '</a></li>';
@@ -293,17 +293,19 @@ var globalObj = {
 			for (var i = 0; i < obj.length; i++) {
 				var item = obj[i];
 				if (!item) continue;
-				var img = item.images,
+				var img = item.images, 
 					firstImg = img && img[0];
 				var tempImage = !!img;
 				if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
-					tempStr += '  <li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
+					tempStr += '<li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
 				} else if (item.style == 'big') { //大图
-					tempStr += ' <li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="big"> <img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
+					tempStr += '<li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="big"> <img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
+				} else if(this.config.currentLabel == '美女') {
+					tempStr += '<li class="spe"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width >firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
 				} else {
-					tempStr += ' <li> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="thumb" style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time">' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + '</i> </span> </a> </li>';
+					tempStr += '<li> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="thumb" style="background: rgb(224, 224, 224) url(img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time">' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + '</i> </span> </a> </li>';
 				}
 			}
 			ul.innerHTML = tempStr;
@@ -511,6 +513,9 @@ var globalObj = {
 		self.viewWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 		setStyleEle(); //得到屏幕宽高
 		container.style.minHeight = self.viewHeight + 'px';
+		if('美女' == config.currentLabel) {
+			$('.sg-list').classList.add('sg-girl');
+		}
 		if ((location.hash.length && location.hash.slice(1))) {
 			if (location.hash.length) {
 				var lable = decodeURIComponent(~location.hash.indexOf('&label=') ? location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/) && location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/)[1] : location.hash.slice(1));
@@ -554,12 +559,17 @@ var globalObj = {
 			emptyElement($('.load-more'));
 			$('.selected .current') && ($('.selected .current').className = '');
 			emptyElement(self.eleData.sgList);
-			label.scrollIntoView();							
-			location.hash = e.target.getAttribute('data-tag');
+			label.scrollIntoView();					
+			if('美女' == e.target.getAttribute('data-tag')) {
+				$('.sg-list').classList.add('sg-girl');
+			} else {
+				$('.sg-list').className = 'sg-list';
+			}
+			//location.hash = e.target.getAttribute('data-tag');
 			config.currentLabel = e.target.getAttribute("data-tag").toLowerCase();
 			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
-			currentLabelList = config.listArray[config.currentLabel];
-			if (currentLabelList.length) { //已缓存
+			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
+			if (currentLabelList && currentLabelList.length) { //已缓存
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
 				self.renderList(renderObj, true);
 			} else {
@@ -613,7 +623,15 @@ var globalObj = {
 				history.back();
 			}
 		});
-
+		self.dbody.addEventListener('click', function(e) {
+			var target = e.target;
+			if($('.sg-girl') && target.tagName == 'IMG') {
+				$('#photo-mast').classList.toggle('sg-hide');
+				$('#photo-mast').style.backgroundImage = 'url(' + target.src + ')';
+				//$('#photo-mast').appendChild(target.clone(true));
+				container.classList.toggle('noScroll');
+			}
+		});
 		function articleRenderSet() {
 			var viewHeight = self.viewHeight;
 			//删除多余图片

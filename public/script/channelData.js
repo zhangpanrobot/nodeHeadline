@@ -16,6 +16,14 @@ var editData = [{
     eng: 'Entertainment',
     val: true
 }, {
+    name: '美女',
+    eng: 'Girl',
+    val: true
+}, {
+    name: '笑话',
+    eng: 'Humor',
+    val: true
+}, {
     name: '商业',
     eng: 'Business',
     val: true

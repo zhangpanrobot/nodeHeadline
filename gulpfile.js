@@ -3,5 +3,5 @@ var livereload = require('gulp-livereload');
 
 gulp.task('default', function() {
 	livereload.listen();
-	gulp.watch('public/js/*.js');	
-});	
+	gulp.watch('public/js/*.js');
+});
