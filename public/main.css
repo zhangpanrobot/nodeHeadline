@@ -64,8 +64,8 @@ img{
 .three-quarters:not(:required) {
   display: inline-block;
   overflow: hidden;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   position: absolute;
   margin: auto;
   left: 0;
@@ -78,7 +78,7 @@ img{
   -ms-animation: three-quarters 1250ms infinite linear;
   -o-animation: three-quarters 1250ms infinite linear;
   animation: three-quarters 1250ms infinite linear;
-  border: 2px solid #3388ee;
+  border: 1px solid #3388ee;
   border-right-color: transparent;
   border-radius: 20px;
   box-sizing: border-box;
@@ -120,6 +120,7 @@ img{
     display: block;
     background-color:rgb(245, 245, 245);
     background: rgb(245, 245, 245) url(img/loading2.png) 50% 60% no-repeat;
+    background-size: 25%;
 }
 .sg-list{
   padding: 0 10px;
@@ -220,9 +221,9 @@ ul.article li{
 }
 .article .three li{
   float: left;
-  margin-left: 5%;
-  padding-top: 30%;
-  width: 30%;
+  margin-left: 1.4%;
+  padding-top: 32.4%;
+  width: 32.4%;
   background-size: cover;
   background-position: 50% 50%;
   background-repeat: no-repeat;
@@ -259,14 +260,14 @@ ul.article a{
   display: block;
   padding: 15px 0;
   overflow: hidden;
-  border-bottom: 1px solid rgb(220, 220, 220);
+  border-bottom: 1px solid rgb(230, 230, 230);
   -webkit-tap-highlight-color: rgba(0,0,0,.1);
 }
 ul.article a.visitedLink h2{
-    color: #aaa;
+    color: #888;
 }
 ul.article a:visited h2{
-    color: #aaa!important;
+    color: #888!important;
 }
 .thumb{
 	float: right;
@@ -321,6 +322,7 @@ ul.article a:visited h2{
 	text-align: center;
     line-height: 45px;
     color: #878c92;
+    background-color: rgb(245, 245, 245);
 }
 .load-more span{
   	height: 45px;
@@ -663,7 +665,7 @@ figure{
 .sg-edit-icon #sg-edit-text span {
   width: 20px;
   height: 20px;
-  margin-top: 13px;
+  margin-top: 12px;
   display: inline-block;
   background: url(img/jiahao.png) 0 0 no-repeat;
   background-size: cover;

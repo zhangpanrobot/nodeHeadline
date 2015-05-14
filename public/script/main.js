@@ -97,7 +97,7 @@ var imageLoaderHelper = function(flag, img, id, src) {
 };
 
 var defaultSRCMap = {
-	'news': './images/default-news.png'
+	'news': './public/img/default.png'
 };
 
 var imageLoaderManager = (function() {
@@ -663,6 +663,7 @@ var globalObj = {
 			if (~e.newURL.indexOf('#article?s')) {
 				//TOFIX: 第一眼所花时间过长
 				article.style.cssText = 'height:100%;min-height:' + viewHeight + 'px;padding: 0;z-index: 100;';
+				articleContainer.style.minHeight = viewHeight + 'px';
 				self.articleStartTime = new Date().getTime();
 				self.readed = false;
 				//edit.style.height = viewHeight + 'px';
