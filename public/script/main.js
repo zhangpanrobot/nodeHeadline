@@ -665,7 +665,7 @@ var globalObj = {
 				photoMask.classList.toggle('sg-hide');
 				$('.sg-tip', photoMask).className = 'sg-tip sg-hide';
 				var newImage = target.cloneNode(true);
-				if (target.naturalHeight > window.innerHeight) {
+				if (target.naturalHeight > window.innerHeight && target.naturalHeight/target.naturalWidth > window.innerHeight/window.innerWidth) {
 					newImage.style.bottom = 'auto';
 				}
 				photoMask.insertBefore(newImage, $('.sg-download'), photoMask);
