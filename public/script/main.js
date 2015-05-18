@@ -11,17 +11,17 @@ listRender({
 */
 
 
-//http://discover.ie.sogou.com/discover_agent?h=8ea3f681-58ab-1f4b-0c9f-eeeec1bce883&cmd=getlist&phone=1&count=20&lastindex=undefined&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
-//http://discover.ie.sogou.com/discover_agent?h=4b950c35-6828-928f-4e39-9b76b78597bd&cmd=getlist&phone=1&count=20&lastindex=0&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
+//http://10.134.24.229/discover_agent?h=8ea3f681-58ab-1f4b-0c9f-eeeec1bce883&cmd=getlist&phone=1&count=20&lastindex=undefined&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
+//http://10.134.24.229/discover_agent?h=4b950c35-6828-928f-4e39-9b76b78597bd&cmd=getlist&phone=1&count=20&lastindex=0&b=%E5%A4%B4%E6%9D%A1&mode=down&t=0&callback=renderListCallback
 
 
 //根据json渲染editer
-function renderEdit(){
+function renderEdit() {
 
 }
 
 //TODO: 第一次进频道或者下拉刷新时, 或者频道过期后再切回来, 都显示更新数量
-function showNewsNum(num){
+function showNewsNum(num) {
 	var callbackMsg = $('#callback-msg');
 	num = num > 10 ? 10 : num;
 	callbackMsg.innerText = arguments[0] ? '为您推荐' + num + '篇文章' : '暂无新推荐';
@@ -82,12 +82,12 @@ function setStyleEle(viewWidth, viewHeight) {
 	style.innerText = '.viewHeight:{' + viewHeight + 'px;}.viewWidth:{' + viewWidth + '};';
 }
 
-function giveTip(text, ele){
+function giveTip(text, ele) {
 	var div = document.createElement('div');
 	div.className = 'sg-tip';
 	div.innerText = text;
 	ele.appendChild(div);
-	setTimeout(function(){
+	setTimeout(function() {
 		//ele.removeChild($('.sg-tip'));
 	}, 2000);
 }
@@ -159,7 +159,7 @@ var globalObj = {
 		"hot": "热门",
 		"editor": "精品"
 	},
-	guid: (function() {//生成uuid
+	guid: (function() { //生成uuid
 		function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000)
 				.toString(16)
@@ -179,7 +179,7 @@ var globalObj = {
 		};
 		img.src = baseUrl;
 	},
-	createScript: function(url) {//jsonp
+	createScript: function(url) { //jsonp
 		var script = document.createElement('script');
 		script.src = url;
 		this.dbody.appendChild(script);
@@ -216,10 +216,11 @@ var globalObj = {
 	//详情页时间转换
 	dateFormat: function(time) {
 		time = new Date(time);
-		var date = dateForm(time.getDate() - 1, true);//日期减1
-		var month = dateForm(time.getMonth() + 1);//月份加1
+		var date = dateForm(time.getDate() - 1, true); //日期减1
+		var month = dateForm(time.getMonth() + 1); //月份加1
 		var hour = dateForm(time.getHours());
 		var minute = dateForm(time.getMinutes());
+
 		function dateForm(item, bool) {
 			item = item + (bool ? 1 : '') + '';
 			item = item.length < 2 ? '0' + item : item;
@@ -257,7 +258,7 @@ var globalObj = {
 			}
 		});
 		$('.selected').innerHTML = str;
-		if(currentDeleted) {
+		if (currentDeleted) {
 			$('.selected li').className = 'current';
 		}
 		//重新初始化iScroll
@@ -303,19 +304,21 @@ var globalObj = {
 			for (var i = 0; i < obj.length; i++) {
 				var item = obj[i];
 				if (!item) continue;
-				var img = item.images, 
+				var img = item.images,
 					firstImg = img && img[0];
 				var tempImage = !!img;
-				if(this.config.currentLabel == '笑话') {
-					tempStr += '<li class="spe sg-joke"><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>':'<p>' + (item.content || '') + '</p>') +'</li>';
+				if (this.config.currentLabel == '笑话') {
+					tempStr += '<li class="spe sg-joke"><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '</li>';
+				} else if (item.style == 'joke') {
+					tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span> </div></li>';
 				} else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
 					tempStr += '<li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
 				} else if (item.style == 'big') { //大图
 					tempStr += '<li class="spe"> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="big"> <img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
-				} else if(this.config.currentLabel == '美女') {
-					tempStr += '<li class="spe sg-girl"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width >firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
+				} else if (this.config.currentLabel == '美女') {
+					tempStr += '<li class="spe sg-girl"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
 				} else {
 					tempStr += '<li> <a href=#article?s=' + encodeURIComponent(item.url) + '&label=' + this.config.currentLabel + '> ' + (tempImage ? (' <div class="thumb" style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time">' + (item.publish_time ? this.timeFormat(this.config.currentTime - item.publish_time * 1000) : '') + '</i> </span> </a> </li>';
 				}
@@ -358,7 +361,7 @@ var globalObj = {
 	//初始化详情请求
 	renderArticle: function() {
 		this.articleTime = new Date().getTime();
-		var baseUrl = 'http://discover.ie.sogou.com/discover_agent?h=' + this.uuid + '&cmd=getcontent&phone=1&url=';
+		var baseUrl = 'http://10.134.24.229/discover_agent?h=' + this.uuid + '&cmd=getcontent&phone=1&url=';
 		this.createScript(baseUrl + location.hash.match(/http.*/)[0] + '&callback=renderArticleCallback');
 	},
 	//从当前列表页请求更多内容
@@ -372,12 +375,16 @@ var globalObj = {
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
 		if (currentLabel == '头条') {
 			index = config.listArray[config.currentLabel].data && config.listArray[config.currentLabel].data.length;
+			//头条里是否插入笑话
+			if (editData[6].val) {
+				isJoke = '&f=j';
+			}
 		} else {
 			index = this.getLastIndex(!config.direction)[0];
 		}
-		if('笑话' == config.currentLabel) {
-			isJoke = '&f=j';
-		}
+		// if('笑话' == config.currentLabel) {
+		// 	isJoke = '&f=j';
+		// }
 		this.createScript(url + index + '&b=' + currentLabel + '&mode=' + (direction ? 'up' : 'down') + '&t=' + this.getLastIndex(direction)[1] + isJoke + '&callback=renderListCallback');
 	},
 	//
@@ -401,8 +408,8 @@ var globalObj = {
 			emptyStyle(this.eleData.sgList);
 			return this.showUp(0);
 		}
-		currentLabelList = config.listArray[config.currentLabel]||{};
-		currentLabelList.data = currentLabelList.data||[];
+		currentLabelList = config.listArray[config.currentLabel] || {};
+		currentLabelList.data = currentLabelList.data || [];
 		if (data.app_cmd[0].cmd[0].user_recomm_info[0] + '' == 'null') {
 			//alert('haha');
 		}
@@ -425,17 +432,17 @@ var globalObj = {
 				//currentLabelList.push(urls);
 			}
 			currentLabelList.time = config.currentTime;
-			setTimeout(function() { //link列表存入本地
-				info = {};
-				info[config.currentLabel] = [];
-				for (var i = 0; i < currentLabelList.data.length; i++) {
-					var item = currentLabelList.data[i];
-					for (var j = 0; j < item.length; j++) {
-						info[config.currentLabel].push(item[j].url);
-					}
-				}
-				localStorage.setItem('info', JSON.stringify(info));
-			}, 0);
+			// setTimeout(function() { //link列表存入本地
+			// 	info = {};
+			// 	info[config.currentLabel] = [];
+			// 	for (var i = 0; i < currentLabelList.data.length; i++) {
+			// 		var item = currentLabelList.data[i];
+			// 		for (var j = 0; j < item.length; j++) {
+			// 			info[config.currentLabel].push(item[j].url);
+			// 		}
+			// 	}
+			// 	localStorage.setItem('info', JSON.stringify(info));
+			// }, 0);
 		}
 	},
 	renderArticleCallback: function(data) {
@@ -472,7 +479,8 @@ var globalObj = {
 		//$('.default-loading') && removeElement($('.default-loading'));
 		var allImg = articleContainer.querySelectorAll('img');
 		allP = articleContainer.querySelectorAll('p');
-		function getOrigin(url){
+
+		function getOrigin(url) {
 			var a = document.createElement('a');
 			a.href = url;
 			return a.hostname;
@@ -493,7 +501,7 @@ var globalObj = {
 				nextParent.style.color = '#aaa';
 			}
 			//图片是相对路径
-			if(currentImg.src.indexOf('/') == 0) {
+			if (currentImg.src.indexOf('/') == 0) {
 				currentImg.src = getOrigin(articleOrigin) + currentImg.src;
 			}
 		}
@@ -514,6 +522,34 @@ var globalObj = {
 		removeClass(article, 'sg-hide');
 		$('title').innerText = data.title.trim().replace(/&nbsp;/g, '');
 	},
+	channelChange: function(channel) {
+		var label = $('[data-tag=' + channel + ']');
+		var self = this;
+		var opeInfo = self.opeInfo;
+		var config = self.config;
+		var channelText = location.hash.slice(1);
+		opeInfo.change = true;
+		opeInfo.direction = false;
+		opeInfo.num = 0;
+		emptyElement($('.load-more'));
+		$('.selected .current') && ($('.selected .current').className = '');
+		emptyElement(self.eleData.sgList);
+		label.scrollIntoView();
+		// location.hash = e.target.getAttribute('data-tag');
+		history.pushState({
+			page: channelText
+		}, undefined, 'http://' + location.host + '/#' + channelText);
+		config.currentLabel = channelText.toLowerCase();
+		config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
+		currentLabelList = config.listArray[config.currentLabel];
+		if (currentLabelList.length) { //已缓存
+			var renderObj = currentLabelList[0].length < 10 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
+			self.renderList(renderObj, true);
+		} else {
+			self.moreList(true);
+		}
+		label.className += 'current';
+	},
 	init: function() {
 		var self = this;
 		var eleData = self.eleData;
@@ -530,7 +566,7 @@ var globalObj = {
 		self.viewWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 		setStyleEle(); //得到屏幕宽高
 		container.style.minHeight = self.viewHeight + 'px';
-		if('美女' == config.currentLabel) {
+		if ('美女' == config.currentLabel) {
 			//$('.sg-list').classList.add('sg-girl');
 		}
 		if ((location.hash.length && location.hash.slice(1))) {
@@ -551,7 +587,7 @@ var globalObj = {
 		if (!self.uuid) {
 			localStorage.setItem('uuid', self.uuid = self.guid());
 		}
-		self.config.baseUrl = 'http://discover.ie.sogou.com/discover_agent?h=' + self.uuid + '&cmd=getlist&phone=1&count=20&lastindex='
+		self.config.baseUrl = 'http://10.134.24.229/discover_agent?h=' + self.uuid + '&cmd=getlist&phone=1&count=20&lastindex='
 		if (!~location.href.indexOf('#article?s=')) {
 			localStorage.setItem('info', '');
 			self.moreList();
@@ -576,8 +612,8 @@ var globalObj = {
 			emptyElement($('.load-more'));
 			$('.selected .current') && ($('.selected .current').className = '');
 			emptyElement(self.eleData.sgList);
-			label.scrollIntoView();					
-			if('美女' == e.target.getAttribute('data-tag')) {
+			label.scrollIntoView();
+			if ('美女' == e.target.getAttribute('data-tag')) {
 				//$('.sg-list').classList.add('sg-girl');
 			} else {
 				//$('.sg-list').className = 'sg-list';
@@ -594,7 +630,7 @@ var globalObj = {
 				//self.listLoadingView();
 				self.moreList(true); //未缓存
 				//TODO: 返回数据后, 显示更新条数
-				
+
 			}
 			if (!e.oldURL) document.body.scrollTop = 0;
 			label.className += 'current';
@@ -636,22 +672,35 @@ var globalObj = {
 		};
 		self.dbody.addEventListener('click', function(e) {
 			var target = e.target;
+			var targetParent = target.parentNode;
 			var photoMask = $('#photo-mask');
+			var photoDownLoad = $('.sg-download');
+			var ifMask = $('.sg-girl') || $('.sg-joke');
 			if (target.className == 'sg-return') {
 				history.back();
 			}
-			if($('.sg-girl') && target.tagName == 'IMG') {
+			if (ifMask && target.tagName == 'IMG') {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
 				photoMask.classList.toggle('sg-hide');
 				$('.sg-tip', photoMask).className = 'sg-tip sg-hide';
-				photoMask.insertBefore(target.cloneNode(true), $('.sg-download'), photoMask);			}
-			if(target.parentNode && target.parentNode.className == 'sg-download') {
+				photoMask.insertBefore(target.cloneNode(true), $('.sg-download'), photoMask);
+				if ($('.sg-girl')) {
+					photoDownLoad.style.display = 'block';
+				} else if ($('.sg-joke')) {
+					photoDownLoad.style.display = 'none';
+				}
+			}
+			if (target.className == 'sg-more-joke') {
+				self.channelChange('笑话');
+			}
+			if (targetParent && targetParent.className == 'sg-download') {
 				$('.sg-tip', photoMask).className = 'sg-tip';
-				setTimeout(function(){
+				setTimeout(function() {
 					$('.sg-tip', photoMask).className = 'sg-tip sg-hide';
-				},1000);
+				}, 1000);
 			}
 		});
+
 		function articleRenderSet() {
 			var viewHeight = self.viewHeight;
 			//删除多余图片
@@ -662,7 +711,7 @@ var globalObj = {
 			}
 			//articleContainer.innerHTML += '<div class="spinner"><div class="dot1"></div><div class="dot2"></div></div>';
 			//container.style.height = viewHeight + 'px';
-			setTimeout(function(){
+			setTimeout(function() {
 				container.className += ' noScroll sg-hide';
 				//articleContainer.style.minHeight = viewHeight + 'px';
 			}, 0);
@@ -716,7 +765,7 @@ var globalObj = {
 					addClass(article, 'sg-hide');
 					emptyStyle(article);
 					emptyElement(articleContainer);
-					$('title').innerText = location.href;	
+					$('title').innerText = location.href;
 					self.pingback('readTime', self.uuid, {
 						iconType: self.config.iconType,
 						url: self.url,
@@ -810,7 +859,7 @@ var globalObj = {
 		}, 1500);
 	},
 	getUpdate: function(currentLabel, lastindex) {
-		var baseUrl = 'http://discover.ie.sogou.com/discover_agent?h=' + this.uuid + '&cmd=getupdatenumber&phone=1&b=' + currentLabel + '&lastindex=' + lastindex + '&callback=updateGeted';
+		var baseUrl = 'http://10.134.24.229/discover_agent?h=' + this.uuid + '&cmd=getupdatenumber&phone=1&b=' + currentLabel + '&lastindex=' + lastindex + '&callback=updateGeted';
 		this.createScript(baseUrl);
 	},
 	pullDownStyle: function() {
@@ -839,7 +888,7 @@ var globalObj = {
 	},
 	getLastIndex: function(bool) { //true时取最大值
 		//注意, 这里是引用值, 直接用slice会改变原有对象
-		var currentList = JSON.parse(JSON.stringify(this.config.listArray[this.config.currentLabel].data||({})));
+		var currentList = JSON.parse(JSON.stringify(this.config.listArray[this.config.currentLabel].data || ({})));
 		if (currentList.length) {
 			var currentItem = !bool ? currentList.shift().shift() : currentList.pop().pop();
 			return [currentItem.index, currentItem.publish_time];

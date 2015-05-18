@@ -750,15 +750,22 @@ figure{
 .sg-girl h2, .sg-joke h2{
   margin: 18px 0 13px 0;
 }
-.sg-joke .sg-text{
-  background: url(./img/joke-text.png) left top no-repeat;
-  background-size: contain;
+.sg-joke{
+  -webkit-tap-highlight-color: none;
+}
+.sg-joke .sg-text, .sg-joke h3, .sg-joke .sg-img{
+  background-size: 20px;
   text-indent: 25px;
+  background-repeat: no-repeat;
+}
+.sg-joke .sg-text{
+  background-image: url(./img/joke-text.png);
 }
 .sg-joke .sg-img{
-  background: url(./img/joke-img.png) left top no-repeat;
-  background-size: contain;
-  text-indent: 25px;
+  background-image: url(./img/joke-img.png);
+}
+.sg-joke h3{
+  background-image: url(./img/channel-joke.png);
 }
 #photo-mask{
   position: fixed;
@@ -824,6 +831,23 @@ figure{
 .sg-tip.sg-hide{
   z-index: -1
 }
+.sg-more-joke{
+  color: rgb(76, 145, 246);
+  text-align: center;
+  line-height: 45px;
+  background-color: rgb(245, 245, 245);
+  border-top: 1px solid rgb(230, 230, 230);
+  cursor: pointer;
+}
+.sg-more-joke span{
+  height: 45px;
+  line-height: 45px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+
+
 
 
 
