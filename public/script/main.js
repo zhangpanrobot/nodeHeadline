@@ -593,15 +593,24 @@ var globalObj = {
 			config.currentLabel = e.target.getAttribute("data-tag").toLowerCase();
 			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
 			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
-			if (currentLabelList && currentLabelList.length) { //已缓存
+			// if (currentLabelList && currentLabelList.length && ) { //已缓存
+			// 	var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
+			// 	self.renderList(renderObj, true);
+			// } else {
+			// 	//TOFIX: 加一个缓冲层
+			// 	//self.listLoadingView();
+			// 	self.moreList(true); //未缓存
+			// 	//TODO: 返回数据后, 显示更新条数
+
+			// }
+			if (!(currentLabelList && currentLabelList.length)) {
+				self.moreList(true);
+			} else if (true) { //时间超三分钟
+				//self.moreList(false, ture);
+				self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
+			} else {
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
 				self.renderList(renderObj, true);
-			} else {
-				//TOFIX: 加一个缓冲层
-				//self.listLoadingView();
-				self.moreList(true); //未缓存
-				//TODO: 返回数据后, 显示更新条数
-
 			}
 			if (!e.oldURL) document.body.scrollTop = 0;
 			label.className += 'current';
@@ -651,10 +660,15 @@ var globalObj = {
 				history.back();
 			}
 			if (ifMask && target.tagName == 'IMG') {
+				//console.log(target.naturalHeight);
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
 				photoMask.classList.toggle('sg-hide');
 				$('.sg-tip', photoMask).className = 'sg-tip sg-hide';
-				photoMask.insertBefore(target.cloneNode(true), $('.sg-download'), photoMask);
+				var newImage = target.cloneNode(true);
+				if (target.naturalHeight > window.innerHeight) {
+					newImage.style.bottom = 'auto';
+				}
+				photoMask.insertBefore(newImage, $('.sg-download'), photoMask);
 				if ($('.sg-girl')) {
 					photoDownLoad.style.display = 'block';
 				} else if ($('.sg-joke')) {

@@ -777,6 +777,7 @@ figure{
   margin: auto;
   background: rgba(0, 0, 0, .8) no-repeat center center;
   background-size: contain;
+  overflow: scroll;
 }
 #photo-mask.sg-hide{
   z-index: 0;
