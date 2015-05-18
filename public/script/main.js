@@ -355,7 +355,6 @@ var globalObj = {
 			change && emptyElement(section);
 			direction ? section.insertBefore(ul, section.children[0]) : section.appendChild(ul);
 			$('.load-more').innerHTML = '<span>正在加载...</span>';
-			this.dbody.touchstart && this.dbody.touchstart();
 		}
 	},
 	//初始化详情请求
@@ -369,7 +368,6 @@ var globalObj = {
 		var config = this.config;
 		var index;
 		var isJoke = '';
-		console.log(config.currentLabel);
 		currentLabel = label || decodeURIComponent(config.currentLabel);
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
@@ -382,9 +380,6 @@ var globalObj = {
 		} else {
 			index = this.getLastIndex(!config.direction)[0];
 		}
-		// if('笑话' == config.currentLabel) {
-		// 	isJoke = '&f=j';
-		// }
 		this.createScript(url + index + '&b=' + currentLabel + '&mode=' + (direction ? 'up' : 'down') + '&t=' + this.getLastIndex(direction)[1] + isJoke + '&callback=renderListCallback');
 	},
 	//
@@ -396,9 +391,6 @@ var globalObj = {
 		try {
 			urls = data.app_cmd[0].cmd[0].user_recomm_info[0].url_infos;
 			this.pingback('listAllUrl', this.uuid, {
-				// url: urls.map(function(item) {
-				// 	return item.url;
-				// }).join(),
 				time: new Date().getTime() - this.listTime,
 				currentLabel: config.currentLabel
 			});
@@ -425,24 +417,11 @@ var globalObj = {
 				this.pullDownStyle();
 				//下拉, 下拉用不同的方法
 				currentLabelList.data.unshift(urls);
-				//保存每个频道最新的时间
-				//currentLabelList.unshift(urls);
+				//TODO: 保存每个频道最新的时间
 			} else {
 				currentLabelList.data.push(urls);
-				//currentLabelList.push(urls);
 			}
 			currentLabelList.time = config.currentTime;
-			// setTimeout(function() { //link列表存入本地
-			// 	info = {};
-			// 	info[config.currentLabel] = [];
-			// 	for (var i = 0; i < currentLabelList.data.length; i++) {
-			// 		var item = currentLabelList.data[i];
-			// 		for (var j = 0; j < item.length; j++) {
-			// 			info[config.currentLabel].push(item[j].url);
-			// 		}
-			// 	}
-			// 	localStorage.setItem('info', JSON.stringify(info));
-			// }, 0);
 		}
 	},
 	renderArticleCallback: function(data) {
@@ -527,19 +506,18 @@ var globalObj = {
 		var self = this;
 		var opeInfo = self.opeInfo;
 		var config = self.config;
-		var channelText = location.hash.slice(1);
 		opeInfo.change = true;
 		opeInfo.direction = false;
 		opeInfo.num = 0;
 		emptyElement($('.load-more'));
 		$('.selected .current') && ($('.selected .current').className = '');
 		emptyElement(self.eleData.sgList);
+		label.parentNode.className = 'current';
 		label.scrollIntoView();
-		// location.hash = e.target.getAttribute('data-tag');
 		history.pushState({
-			page: channelText
-		}, undefined, 'http://' + location.host + '/#' + channelText);
-		config.currentLabel = channelText.toLowerCase();
+			page: channel
+		}, undefined, 'http://' + location.host + '/#' + channel);
+		config.currentLabel = channel.toLowerCase();
 		config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
 		currentLabelList = config.listArray[config.currentLabel];
 		if (currentLabelList.length) { //已缓存
@@ -548,7 +526,6 @@ var globalObj = {
 		} else {
 			self.moreList(true);
 		}
-		label.className += 'current';
 	},
 	init: function() {
 		var self = this;
@@ -613,12 +590,6 @@ var globalObj = {
 			$('.selected .current') && ($('.selected .current').className = '');
 			emptyElement(self.eleData.sgList);
 			label.scrollIntoView();
-			if ('美女' == e.target.getAttribute('data-tag')) {
-				//$('.sg-list').classList.add('sg-girl');
-			} else {
-				//$('.sg-list').className = 'sg-list';
-			}
-			//location.hash = e.target.getAttribute('data-tag');
 			config.currentLabel = e.target.getAttribute("data-tag").toLowerCase();
 			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
 			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
