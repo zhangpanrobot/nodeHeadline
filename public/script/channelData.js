@@ -4,6 +4,11 @@ var editData = [{
     eng: 'Headlines',
     val: true
 }, {
+    name: '撕逼头条',
+    attr: '撕逼',
+    eng: 'Catfight',
+    val: true
+}, {
     name: '军事',
     eng: 'Military',
     val: true
@@ -21,7 +26,7 @@ var editData = [{
     val: true
 }, {
     name: '笑话',
-    eng: 'Humor',
+    eng: 'Joke',
     val: true
 }, {
     name: '商业',

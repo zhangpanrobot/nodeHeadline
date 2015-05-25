@@ -279,6 +279,9 @@ ul.article a:visited h2{
   background-repeat: no-repeat;
   -webkit-background-size: cover;
 }
+.thumb img{
+  opacity: 0;
+}
 .count{
 	position: absolute;
   bottom: 17px;
@@ -628,14 +631,15 @@ figure{
 }
 .sg-edit-group li>div{
   position: relative;
-  padding: 5px;
+  margin: 5px;
 }
 .sg-edit-group span{
   display: block;
 }
 .sg-select-keyWord{
-  position: relative;
-  top: -40px;
+  position: absolute;
+  width: 100%;
+  bottom: 20px;
   text-align: center;
   color: #fff;
 }
@@ -780,7 +784,7 @@ figure{
   overflow: scroll;
 }
 #photo-mask.sg-hide{
-  z-index: 0;
+  z-index: -1;
 }
 #photo-mask img{
   position: absolute;
