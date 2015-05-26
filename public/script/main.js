@@ -377,7 +377,7 @@ var globalObj = {
 		if (currentLabel == '头条') {
 			index = config.listArray[config.currentLabel].data && config.listArray[config.currentLabel].data.length;
 			//头条里是否插入笑话
-			if (editData[7].val) {
+			if (editData[6].val) {
 				isJoke = '&f=j';
 			}
 		} else {

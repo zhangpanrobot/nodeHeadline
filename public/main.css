@@ -217,6 +217,9 @@ ul.article li{
   display: inline-block;
   width: 100%;
 }
+.three ul li{
+  padding: 0;
+}
 .spe h2, .three, .big{
   margin-bottom: 8px;
 }
@@ -776,8 +779,19 @@ figure{
 .sg-joke h3{
   background-image: url(./img/channel-joke.png);
 }
+.sg-joke p:nth-child(3){
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+.sg-sibi h3{
+  background-image: url(./img/channel-joke.png);
+}
 .sg-joke, .sg-sibi{
   margin: 10px 0;
+}
+.sg-joke h3,.sg-sibi h3{
+  padding-bottom: 11px;
+  border-bottom: 1px solid rgb(230, 230, 230);
 }
 #photo-mask{
   position: fixed;
