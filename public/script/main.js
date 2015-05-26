@@ -295,7 +295,7 @@ var globalObj = {
 			}
 			for (var i = 0; i < obj.length; i++) {
 				var item = obj[i];
-				var url = encodeURIComponent(item.url);
+				var url = encodeURIComponent(item && item.url);
 				var currentLabel = this.config.currentLabel;
 				var currentTime = this.config.currentTime;
 				if (!item) continue;
@@ -320,8 +320,17 @@ var globalObj = {
 					//tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span> </div></li>';
 				} else if(item.type == 'sibi'){
 					sibi = item.sibi;
-					emptyElement($('.load-more'));
+					tempStr += '<li class="spe sg-sibi">';
 					tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3><div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div></li>';
+					if(this.config.currentLabel == '撕逼') {
+						if(i == 0) {
+							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
+						} else if(i == 1){
+							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
+						}
+					} else {
+						tempStr += '<h3>今日撕逼</h3>';
+					}
 				}else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
@@ -895,6 +904,7 @@ var globalObj = {
 				touchY = e.touches[0].pageY;
 			});
 			container.addEventListener('touchmove', function(e) {
+			if(self.config.currentLabel == '撕逼头条') return;
 				var pageY = e.touches[0].pageY;
 				if (allowToPull(e)) {
 					if (pageY - touchY > 100) {
@@ -919,6 +929,7 @@ var globalObj = {
 				}
 			});
 			container.addEventListener('touchend', function(e) {
+			if(self.config.currentLabel == '撕逼头条') return;
 				var opeInfo = self.opeInfo;
 				if (allowToPull(e)) {
 					opeInfo.change = false;

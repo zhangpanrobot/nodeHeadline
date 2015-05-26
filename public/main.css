@@ -811,16 +811,42 @@ figure{
   padding-bottom: 15px;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
-.sg-sibi h3{
-  background-image: url(./img/channel-joke.png);
-}
 .sg-joke, .sg-sibi{
   margin: 10px 0;
+}
+.sg-chart{
+  height: 50px;
+  line-height: 50px;
+}
+.sg-chart-mini{
+  height: 5px;
+}
+.sg-chart .pros, .sg-chart .cons{
+  position: relative;
+}
+.sg-chart .pros{
+  background-color: #3494ff;
+}
+.sg-chart .pros:after{
+  content: "";
+
+}
+.sg-chart .cons:after{
+  content: "";
+
+}
+.sg-chart .cons{
+  background-color: #ff4949;
 }
 .sg-joke h3, .sg-sibi h3{
   padding-bottom: 11px;
   margin-top: 13px;
   border-bottom: 1px solid rgb(230, 230, 230);
+}
+.sg-sibi h3{
+  background-image: url(./img/channel-joke.png);
+  line-height: 39px;
+  border-bottom: none;
 }
 #photo-mask{
   position: fixed;
