@@ -248,6 +248,7 @@ ul.article li{
   overflow: hidden;
 }
 .big{
+  position: relative;
   max-height: 200px;
   min-height: 100px;
   overflow: hidden;
@@ -258,6 +259,16 @@ ul.article li{
 .big img{
   display: block;
   max-width: 100%;
+}
+.big .caption{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 33px;
+  text-align: center;
+  line-height: 33px;
+  color: #fff;
+  font-size: 16px;
 }
 ul.article a{
   position: relative;
@@ -789,8 +800,9 @@ figure{
 .sg-joke, .sg-sibi{
   margin: 10px 0;
 }
-.sg-joke h3,.sg-sibi h3{
+.sg-joke h3, .sg-sibi h3{
   padding-bottom: 11px;
+  margin-top: 13px;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
 #photo-mask{

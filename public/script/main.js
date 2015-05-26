@@ -287,6 +287,12 @@ var globalObj = {
 			var ul = document.createElement('ul'),
 				tempStr = '';
 			ul.className = 'article';
+			var hasSibi = obj.some(function(item){
+				return item.type == 'sibi';
+			});
+			if(!hasSibi) {
+				obj.push();
+			}
 			for (var i = 0; i < obj.length; i++) {
 				var item = obj[i];
 				var url = encodeURIComponent(item.url);
@@ -313,7 +319,7 @@ var globalObj = {
 					tempStr += '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span></div></li>';
 					//tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span> </div></li>';
 				} else if(item.type == 'sibi'){
-					
+					tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3><div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros">' + sibi.pros_title + '</div><div class="cons">' + sibi.cons_title + '</div></div></li>';
 				}else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
@@ -921,7 +927,7 @@ var globalObj = {
 					} else {
 						pulldownMsgText.innerText = '正在推荐';
 						addClass(pulldownMsgIcon, 'icon-refresh');
-						console.log(self.getLastIndex(true)[0]);
+						//console.log(self.getLastIndex(true)[0]);
 						self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
 						self.pingback('update', self.uuid, {
 							currentLabel: self.config.currentLabel
