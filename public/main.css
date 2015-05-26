@@ -269,6 +269,7 @@ ul.article li{
   line-height: 33px;
   color: #fff;
   font-size: 16px;
+  background-color: rgba(0, 0, 0, .5);
 }
 ul.article a{
   position: relative;
@@ -776,7 +777,7 @@ figure{
 .sg-joke img, .sg-girl img{
   width: 100%;
 }
-.sg-joke .sg-text, .sg-joke h3, .sg-joke .sg-img{
+.sg-joke .sg-text, .sg-joke h3, .sg-joke .sg-img, .sg-sibi h3{
   background-size: 20px;
   text-indent: 25px;
   background-repeat: no-repeat;
