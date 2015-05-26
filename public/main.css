@@ -271,6 +271,22 @@ ul.article li{
   font-size: 16px;
   background-color: rgba(0, 0, 0, .5);
 }
+.opposition>div{
+  width: 50%;
+  float: left;
+}
+.opposition .pros{
+  text-align: right;
+}
+.opposition .pros>span{
+  padding-right: 50px;
+}
+.opposition .cons>span{
+  padding-left: 50px;
+}
+.opposition .cons{
+
+}
 ul.article a{
   position: relative;
   color: #333;
