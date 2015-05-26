@@ -34,6 +34,10 @@ function updateGeted(data) {
 	return globalObj.updateGeted(data);
 }
 
+function sibicallback(data) {
+	return globalObj.sibicallback(data);
+}
+
 function removeElement(ele) {
 	return ele.parentNode.removeChild(ele);
 }
@@ -156,6 +160,7 @@ var globalObj = {
 		}, 5000);
 	},
 	config: {
+		domain: 'http://10.134.24.229/discover_agent',
 		//当前时间(服务器时间)
 		currentTime: 0,
 		//当前频道
@@ -195,6 +200,19 @@ var globalObj = {
 			return item;
 		}
 		return month + '-' + date + '  ' + hour + ':' + minute;
+	},
+	getsibi: function(){
+		var self = this;
+		function sibiDate() {
+			var curDate = new Date(self.config.currentTime);
+			//return (1900 + curDate.getYear()) + '0' + (curDate.getMonth() + 1) + '' + curDate.getDate();
+			return 20150520;
+		}
+		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + sibiDate() + '&callback=sibicallback';
+		this.createScript(baseUrl);
+	},
+	sibicallback: function(data) {
+		console.log(data);
 	},
 	//三个大layer切换
 	layerSwitch: function(sup, sub) {
@@ -357,12 +375,13 @@ var globalObj = {
 		if (currentLabel == '头条') {
 			index = config.listArray[config.currentLabel].data && config.listArray[config.currentLabel].data.length;
 			//头条里是否插入笑话
-			if (editData[6].val) {
+			if (editData[7].val) {
 				isJoke = '&f=j';
 			}
 		} else {
 			index = this.getLastIndex(config.direction)[0];
 		}
+		currentLabel = currentLabel == '撕逼头条'? '撕逼': currentLabel;
 		this.createScript(url + index + '&b=' + currentLabel + '&mode=' + (direction ? 'up' : 'down') + '&t=' + this.getLastIndex(direction)[1] + isJoke + '&callback=renderListCallback');
 	},
 	//
@@ -613,8 +632,8 @@ var globalObj = {
 				}
 			}
 		});
-		$('.load-more') && window.addEventListener('scroll', function() {
-			self.scrollUpdateDelay.call(self);
+		$('.load-more') && window.addEventListener('scroll', function(e) {
+			self.scrollUpdateDelay.call(self, e);
 		});
 		$('#toTop') && $('#toTop').addEventListener('touchstart', function(e) {
 			document.body.scrollTop = 0;
@@ -773,6 +792,12 @@ var globalObj = {
 	},
 	scrollUpdateDelay: function(e) {
 		var self = this;
+		if($('#photo-mask').className == ''){
+			e.preventDefault && e.preventDefault();
+			e.returnValue=false;
+			e.stopPropagation && e.stopPropagation();
+			return false;
+		}
 		if (self.eleData.container.className == '') {
 			setTimeout(function() {
 				self.scrollUpdate(e);
