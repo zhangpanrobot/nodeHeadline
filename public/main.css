@@ -105,7 +105,7 @@ img{
     width: 30px;
     height: 30px;
     left: 0;
-    top: -60px;
+    top: -30px;
     right: 0;
     bottom: 0;
     margin: auto;
@@ -672,7 +672,7 @@ figure{
 .sg-select-keyWord{
   position: absolute;
   width: 100%;
-  bottom: 20px;
+  bottom: 5px;
   text-align: center;
   color: #fff;
 }
@@ -828,6 +828,8 @@ figure{
   position: relative;
   border-top-left-radius: 50px; 
   border-bottom-left-radius:50px;
+  transition: width .5s ease;
+  -webkit-transition: width .5s ease;
 }
 .sg-chart-mini{
   height: 5px;
@@ -855,6 +857,7 @@ figure{
   height: 2px;
   background-color: rgb(250, 250, 250);
   transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
 }
 .sg-chart-min .pros:before{
   width: 5px;
@@ -871,8 +874,9 @@ ul.article .sg-sibi-list{
 }
 .sg-sibi h3{
   background-image: url(./img/channel-joke.png);
-  line-height: 39px;
   border-bottom: none;
+  padding-bottom: 0;
+  margin: 10px 0;
 }
 .sg-sibi-prev, .sg-sibi-current{
   text-align: center;
@@ -881,7 +885,7 @@ ul.article .sg-sibi-list{
 }
 .sg-sibi-prev:before, .sg-sibi-current:before{
   content: '';
-  width: 40%;
+  width: 37%;
   height: 1px;
   position: absolute;
   left: 0;
@@ -890,7 +894,7 @@ ul.article .sg-sibi-list{
 }
 .sg-sibi-prev:after, .sg-sibi-current:after{
   content: '';
-  width: 40%;
+  width: 37%;
   height: 1px;
   position: absolute;
   right: 0;

@@ -201,14 +201,14 @@ var globalObj = {
 		}
 		return month + '-' + date + '  ' + hour + ':' + minute;
 	},
+	sibiDate: function(date){
+		var curDate = new Date(date);
+		return (1900 + curDate.getYear()) + '0' + (curDate.getMonth() + 1) + '' + curDate.getDate();
+	},
 	getsibi: function(){
 		var self = this;
-		function sibiDate() {
-			var curDate = new Date(self.config.currentTime);
-			//return (1900 + curDate.getYear()) + '0' + (curDate.getMonth() + 1) + '' + curDate.getDate();
-			return 20150520;
-		}
-		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + sibiDate() + '&callback=sibicallback';
+		//var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + self.sibiDate(self.config.currentTime) + '&callback=sibicallback';
+		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + 20150520 + '&callback=sibicallback';
 		this.createScript(baseUrl);
 	},
 	sibicallback: function(data) {
@@ -283,6 +283,7 @@ var globalObj = {
 	//渲染列表页
 	renderList: function(obj, change, direction) {
 		var section = this.eleData.sgList;
+		var self = this;
 		if (obj.length) {
 			var ul = document.createElement('ul'),
 				tempStr = '', tempSibiStr = '';
@@ -317,17 +318,23 @@ var globalObj = {
 						});
 					}
 					tempStr += '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span></div></li>';
-					//tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span> </div></li>';
 				} else if(item.type == 'sibi'){
 					sibi = item.sibi;
-					//tempStr += '<li class="spe sg-sibi">';
-					//tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3><div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div></li>';
+					sibi.pros_num = 20;
+					sibi.cons_num = 80;
+					//过小时样式展示问题
+					if(sibi.pros_num < 20) {
+						sibi.pros_num = 20;
+					}
 					if(this.config.currentLabel == '撕逼头条') {
 						tempStr += '<li class="spe sg-sibi sg-sibi-list">';
-						if(i == 0) {
+						if(self.getsibi(sibi.found_time) == self.getsibi(self.config.currentTime)) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
 							//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
 							tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
+							setTimeout(function(){
+								$('.sg-chart .pros').style.width = sibi.pros_num/(sibi.pros_num + sibi.cons_num) * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
+							}, 500);
 						} else if(i == 1){
 							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
@@ -408,7 +415,6 @@ var globalObj = {
 		}
 		this.createScript(url + index + '&b=' + currentLabel + '&mode=' + (direction ? 'up' : 'down') + '&t=' + this.getLastIndex(direction)[1] + isJoke + '&callback=renderListCallback');
 	},
-	//
 	renderListCallback: function(data) {
 		var opeInfo = this.opeInfo;
 		var config = this.config;
@@ -428,9 +434,6 @@ var globalObj = {
 		}
 		currentLabelList = config.listArray[config.currentLabel] || {};
 		currentLabelList.data = currentLabelList.data || [];
-		if (data.app_cmd[0].cmd[0].user_recomm_info[0] + '' == 'null') {
-			//alert('haha');
-		}
 		if (!data.app_cmd[0].cmd[0].user_recomm_info[0]) {
 			$('.load-more').innerHTML = '<span>童鞋,表淘气,没有更多咯^_^</span>';
 			return;
@@ -456,8 +459,6 @@ var globalObj = {
 		var eleData = self.eleData;
 		var article = eleData.article;
 		var articleContainer = eleData.articleContainer;
-		//container.parentNode.style.height = '100%';
-		//articleContainer.scrollIntoView();
 		config.currentTime = (+data.timestamp) * 1000;
 		//TOFIX: data需要特殊处理(安全考虑)
 		data = data.app_cmd[0].cmd[0].news_app_info[0].url_info[0];
@@ -481,7 +482,6 @@ var globalObj = {
 			articleContainer.querySelector('.time') && (articleContainer.querySelector('.time').outerHTML = dateFormated);
 		}
 		articleContainer.innerHTML += '<div class="sg-content">' + data.content + '</div>';
-		//$('.default-loading') && removeElement($('.default-loading'));
 		var allImg = articleContainer.querySelectorAll('img');
 		allP = articleContainer.querySelectorAll('p');
 
@@ -569,9 +569,6 @@ var globalObj = {
 		self.viewWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 		setStyleEle(); //得到屏幕宽高
 		container.style.minHeight = self.viewHeight + 'px';
-		if ('美女' == config.currentLabel) {
-			//$('.sg-list').classList.add('sg-girl');
-		}
 		if ((location.hash.length && location.hash.slice(1))) {
 			if (location.hash.length) {
 				var lable = decodeURIComponent(~location.hash.indexOf('&label=') ? location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/) && location.hash.slice(1).match(/label=(.*)(&|\s|\n)?/)[1] : location.hash.slice(1));
@@ -699,11 +696,8 @@ var globalObj = {
 					removeElement(item);
 				});
 			}
-			//articleContainer.innerHTML += '<div class="spinner"><div class="dot1"></div><div class="dot2"></div></div>';
-			//container.style.height = viewHeight + 'px';
 			setTimeout(function() {
 				container.className += ' noScroll sg-hide';
-				//articleContainer.style.minHeight = viewHeight + 'px';
 			}, 0);
 			setTimeout(function() {
 				if ($('.default-loading')) {
@@ -901,7 +895,6 @@ var globalObj = {
 				container = eleData.container,
 				pulldownMsgIcon = $('#pulldown-msg i'),
 				pulldownMsgText = $('#pulldown-msg span');
-
 			function allowToPull(e) {
 				return document.body.scrollTop == 0 && (e.target.parentNode.nodeName !== 'LI' || !e.target.hasAttribute('data-tag'));
 			}
@@ -945,7 +938,6 @@ var globalObj = {
 					} else {
 						pulldownMsgText.innerText = '正在推荐';
 						addClass(pulldownMsgIcon, 'icon-refresh');
-						//console.log(self.getLastIndex(true)[0]);
 						self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
 						self.pingback('update', self.uuid, {
 							currentLabel: self.config.currentLabel
