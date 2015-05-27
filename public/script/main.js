@@ -15,13 +15,38 @@ function showNewsNum(num) {
 }
 
 //撕逼头条两方样式
-function sibiStyle(tempSibiStr){
+function sibiStyle(ele, num_part, sum){
 	//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
-	tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
+	var chart = '<div class="sg-chart"><div class="pros"></div><div id="pros_support"></div><div id="cons_support"></div></div>';
+	var articleContainer = $('.sg-article-container');
+	articleContainer.innerHTML += chart;
 	setTimeout(function(){
-		$('.sg-chart .pros').style.width = sibi.pros_num/(sibi.pros_num + sibi.cons_num) * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
+		$('.sg-chart', articleContainer).children[0].style.width = num_part/sum * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
 	}, 500);
-	//tempSibiStr += '';
+}
+
+function sibiMedia(data) {
+	var pros = data.pros_news;
+	var cons = data.cons_news;
+	var str = '<div class="sg-list sg-sibi-media">';
+	var tempStr = '<ul class="article">';
+	var tempStr1 = '<ul class="article">';
+	tempStr += renderSibiMedia(pros[0]);
+	tempStr += renderSibiMedia(cons[0]);
+	tempStr1 += renderSibiMedia(pros[1]);
+	tempStr1 += renderSibiMedia(cons[1]);
+	tempStr += '</ul>';
+	tempStr1 += '</ul>';
+	return str + tempStr + tempStr1 + '</div>';
+}
+
+function renderSibiMedia(obj, bool) {
+	var currentTime = globalObj.config.currentTime;
+	if(obj.image) {	
+		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url('+ obj.image +') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+	} else {
+		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+	}
 }
 
 function $(selector, context) {
@@ -66,6 +91,15 @@ function addClass(ele, str) {
 
 function removeClass(ele, str) {
 	ele.classList.remove(str);
+}
+
+function insertAfter(newEle, targetEle) {
+	var parentEle = targetEle.parentNode;
+	if( parentEle.lastChild == targetEle) {
+		parentEle.appendChild(newEle);
+	} else {
+		parentEle.insertBefore(newEle, targetEle.nextSbling);
+	}
 }
 
 //视口大小用类控制
@@ -179,6 +213,10 @@ var globalObj = {
 		//每个频道的内容及频道最后一次请求新数据的时间
 		listArray: {}
 	},
+	//复制Big图为背景图, 大图详情及撕B公用
+	getBig: function(){
+
+	},
 	loadMoreText: function(bool) {
 		$('.load-more').innerHTML = bool ? '<span>正在加载...</span>' : '';
 	},
@@ -215,14 +253,26 @@ var globalObj = {
 		var curDate = new Date(date);
 		return (1900 + curDate.getYear()) + '0' + (curDate.getMonth() + 1) + '' + curDate.getDate();
 	},
-	getsibi: function(){
+	getsibi: function(date){
 		var self = this;
 		//var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + self.sibiDate(self.config.currentTime) + '&callback=sibicallback';
 		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + 20150520 + '&callback=sibicallback';
 		this.createScript(baseUrl);
 	},
 	sibicallback: function(data) {
+		var self = this;
+		var article = self.eleData.article;
+		var articleContainer = $('.sg-article-container');
 		console.log(data);
+		var sibi = data.app_cmd[0].cmd[0].sibi;
+		sibi.pros_num = 20;
+		sibi.cons_num = 80;
+		articleContainer.innerHTML += '<p class="sg-chart-intro">' + sibi.intro + '</p>';
+		//正反方对比
+		sibiStyle($('.big', article), sibi.pros_num, sibi.pros_num + sibi.cons_num);
+		articleContainer.innerHTML += '<div class=sg-chart-text><span class="sg-chart-text-pros">' + sibi.pros_title + '</span><span class="sg-chart-text-cons">' + sibi.cons_title + '</span></div>';
+		articleContainer.innerHTML += '<div class=sg-sibi-media-cantainer>' + sibiMedia(sibi) + '</div>';
+				
 	},
 	//三个大layer切换
 	layerSwitch: function(sup, sub) {
@@ -332,24 +382,26 @@ var globalObj = {
 					sibi = item.sibi;
 					sibi.pros_num = 20;
 					sibi.cons_num = 80;
+					sibi.pros_title = '没有爱的婚姻不值得留恋';
+					sibi.cons_title = '婚姻是责任与爱无关';
 					//过小时样式展示问题
 					if(sibi.pros_num < 20) {
 						sibi.pros_num = 20;
 					}
 					if(this.config.currentLabel == '撕逼头条') {
-						tempStr += '<li class="spe sg-sibi sg-sibi-list">';
-						if(self.getsibi(sibi.found_time) == self.getsibi(self.config.currentTime)) {
+						tempStr += '<li class="spe sg-sibi sg-sibi-list"><a href="#sibi?content=' + sibi.content + '">';
+						if(self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime)) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
-							sibiStyle(tempSibiStr);
-							tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
+							//sibiStyle(tempSibiStr);
+							//tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
 						} else {
 							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
 					} else {
 						tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3>';
 					}
-					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
-					tempStr += tempSibiStr + '</li>';
+					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="sg-chart sg-chart-mini"><div class="pros"></div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
+					tempStr += tempSibiStr + '</a></li>';
 				}else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
@@ -639,9 +691,6 @@ var globalObj = {
 					currentLabel: self.config.currentLabel
 				});
 			}, 50);
-
-			//撕逼头条
-			
 		});
 		$('.sg-turn-back') && $('.sg-turn-back').addEventListener('click', function(e) {
 			e.target.style.backgroundPosition = '0 0';
@@ -722,29 +771,36 @@ var globalObj = {
 		}
 		window.addEventListener('hashchange', function(e) {
 			var viewHeight = self.viewHeight;
-			if (~e.newURL.indexOf('#article?s')) {
+			var isArticle = !!~e.newURL.indexOf('#article?s');
+			var isSibi = !!~e.newURL.indexOf('#sibi?content');
+			if (isArticle || isSibi) {
 				//TOFIX: 第一眼所花时间过长
 				article.style.cssText = 'height:100%;min-height:' + viewHeight + 'px;padding: 0;z-index: 100;';
 				articleContainer.style.minHeight = viewHeight + 'px';
-				self.articleStartTime = new Date().getTime();
-				self.readed = false;
+				if(isArticle) {
+					self.articleStartTime = new Date().getTime();
+					self.readed = false;
+				}
 				//edit.style.height = viewHeight + 'px';
 				self.scrollTop = document.body.scrollTop;
 				for (var i = $$('.article a').length - 1; i >= 0; i--) {
 					if (encodeURIComponent($$('.article a')[i].href) == encodeURIComponent(e.newURL)) {
 						var currentTag = $$('.article a')[i];
 						currentTag.className = 'visitedLink';
-						if (currentTag.children[0].className == 'big' && !article.querySelector('big')) {
-							//article.insertBefore(currentTag.children[0].cloneNode(true), articleContainer);
-							//$('.big img', article).style.maxWidth = '200%';
+						var cloneTarget = isArticle? currentTag.children[0]: currentTag.children[1];
+						if (cloneTarget.className == 'big' && !article.querySelector('big')) {
+							//TODO: add big picture
+							article.children[0].insertBefore(cloneTarget.cloneNode(true), articleContainer);
+							isArticle && ($('.big img', article).style.maxWidth = '200%');
 						}
-						articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
+						if(isArticle) articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
 					}
 				}
-				articleRenderSet();
+				isArticle && articleRenderSet();
+				isSibi && self.getsibi(location.hash.split('=')[1]);
 				article.scrollIntoView();
 			} else {
-				if (~e.oldURL.indexOf('#article?s')) {
+				if (~e.oldURL.indexOf('#article?s') || ~e.oldURL.indexOf('#sibi?content')) {
 					e.preventDefault(), e.stopPropagation();
 					removeClass(container, 'noScroll');
 					emptyStyle(container);
@@ -866,6 +922,7 @@ var globalObj = {
 		removeClass($('#pulldown-msg i'), 'icon-refresh');
 	},
 	updateGeted: function(data) {
+		console.trace();
 		var opeInfo = this.opeInfo;
 		data = data.app_cmd[0].cmd[0].news_app_info[0];
 		if (data.update_number) {
