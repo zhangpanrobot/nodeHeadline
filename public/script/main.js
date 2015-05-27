@@ -14,6 +14,16 @@ function showNewsNum(num) {
 	}, 1500);
 }
 
+//撕逼头条两方样式
+function sibiStyle(tempSibiStr){
+	//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
+	tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
+	setTimeout(function(){
+		$('.sg-chart .pros').style.width = sibi.pros_num/(sibi.pros_num + sibi.cons_num) * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
+	}, 500);
+	//tempSibiStr += '';
+}
+
 function $(selector, context) {
 	return (context || document).querySelector(selector);
 }
@@ -330,12 +340,9 @@ var globalObj = {
 						tempStr += '<li class="spe sg-sibi sg-sibi-list">';
 						if(self.getsibi(sibi.found_time) == self.getsibi(self.config.currentTime)) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
-							//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
+							sibiStyle(tempSibiStr);
 							tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
-							setTimeout(function(){
-								$('.sg-chart .pros').style.width = sibi.pros_num/(sibi.pros_num + sibi.cons_num) * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
-							}, 500);
-						} else if(i == 1){
+						} else {
 							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
 					} else {

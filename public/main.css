@@ -815,10 +815,10 @@ figure{
   margin: 10px 0;
 }
 .sg-chart{
-  height: 50px;
-  line-height: 50px;
+  height: 30px;
+  line-height: 30px;
   background-color:  #3494ff;
-  border-radius: 50px;
+  border-radius: 30px;
   position: relative;
 }
 .sg-chart .pros{
@@ -826,8 +826,8 @@ figure{
   width: 50%;
   background-color: #ff4949;
   position: relative;
-  border-top-left-radius: 50px; 
-  border-bottom-left-radius:50px;
+  border-top-left-radius: 30px; 
+  border-bottom-left-radius:30px;
   transition: width .5s ease;
   -webkit-transition: width .5s ease;
 }
@@ -840,7 +840,7 @@ figure{
   width: 0;
   height: 0;
   border: 25px solid #ff4949;
-  right: -49px;
+  right: -29px;
   border-right-color: transparent;
   border-bottom-color: transparent;
 }
@@ -851,9 +851,9 @@ figure{
 .sg-chart .pros:before{
   content: "";
   position: absolute;
-  right: -64px;
-  top: 23px;
-  width: 75px;
+  right: -38px;
+  top: 14px;
+  width: 45px;
   height: 2px;
   background-color: rgb(250, 250, 250);
   transform: rotate(-45deg);
