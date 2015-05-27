@@ -817,36 +817,85 @@ figure{
 .sg-chart{
   height: 50px;
   line-height: 50px;
+  background-color:  #3494ff;
+  border-radius: 50px;
+  position: relative;
+}
+.sg-chart .pros{
+  height: 100%;
+  width: 50%;
+  background-color: #ff4949;
+  position: relative;
+  border-top-left-radius: 50px; 
+  border-bottom-left-radius:50px;
 }
 .sg-chart-mini{
   height: 5px;
 }
-.sg-chart .pros, .sg-chart .cons{
-  position: relative;
-}
-.sg-chart .pros{
-  background-color: #3494ff;
-}
 .sg-chart .pros:after{
   content: "";
-
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 25px solid #ff4949;
+  right: -49px;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
 }
-.sg-chart .cons:after{
+.sg-chart-min .pros:after{
+  border-width: 3px;
+  right: -3px;
+}
+.sg-chart .pros:before{
   content: "";
+  position: absolute;
+  right: -64px;
+  top: 23px;
+  width: 75px;
+  height: 2px;
+  background-color: rgb(250, 250, 250);
+  transform: rotate(-45deg);
+}
+.sg-chart-min .pros:before{
+  width: 5px;
+}
 
-}
-.sg-chart .cons{
-  background-color: #ff4949;
-}
 .sg-joke h3, .sg-sibi h3{
   padding-bottom: 11px;
   margin-top: 13px;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
+ul.article .sg-sibi-list{
+  margin: 0 10px;
+  padding: 0;
+}
 .sg-sibi h3{
   background-image: url(./img/channel-joke.png);
   line-height: 39px;
   border-bottom: none;
+}
+.sg-sibi-prev, .sg-sibi-current{
+  text-align: center;
+  padding: 13px;
+  position: relative;
+}
+.sg-sibi-prev:before, .sg-sibi-current:before{
+  content: '';
+  width: 40%;
+  height: 1px;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  background-color: rgb(230, 230, 230);
+}
+.sg-sibi-prev:after, .sg-sibi-current:after{
+  content: '';
+  width: 40%;
+  height: 1px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  background-color: rgb(230, 230, 230);
 }
 #photo-mask{
   position: fixed;

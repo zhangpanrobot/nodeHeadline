@@ -285,7 +285,7 @@ var globalObj = {
 		var section = this.eleData.sgList;
 		if (obj.length) {
 			var ul = document.createElement('ul'),
-				tempStr = '';
+				tempStr = '', tempSibiStr = '';
 			ul.className = 'article';
 			var hasSibi = obj.some(function(item){
 				return item.type == 'sibi';
@@ -320,17 +320,22 @@ var globalObj = {
 					//tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3><h2 class="' + (firstImg ? 'sg-img' : 'sg-text') + '">' + item.title + '</h2>' + (firstImg ? '<div class="big"><img src="' + img[0].name + '" alt="' + item.title + '"/></div>' : '<p>' + (item.content || '') + '</p>') + '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span> </div></li>';
 				} else if(item.type == 'sibi'){
 					sibi = item.sibi;
-					tempStr += '<li class="spe sg-sibi">';
-					tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3><div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div></li>';
-					if(this.config.currentLabel == '撕逼') {
+					//tempStr += '<li class="spe sg-sibi">';
+					//tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3><div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div></li>';
+					if(this.config.currentLabel == '撕逼头条') {
+						tempStr += '<li class="spe sg-sibi sg-sibi-list">';
 						if(i == 0) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
+							//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
+							tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
 						} else if(i == 1){
 							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
 					} else {
-						tempStr += '<h3>今日撕逼</h3>';
+						tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3>';
 					}
+					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
+					tempStr += tempSibiStr + '</li>';
 				}else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
@@ -388,7 +393,8 @@ var globalObj = {
 		var config = this.config;
 		var index;
 		var isJoke = '';
-		currentLabel = label || decodeURIComponent(config.currentLabel);
+		var label1 = decodeURIComponent(config.currentLabel) == '撕逼头条'? '撕逼': decodeURIComponent(config.currentLabel);
+		currentLabel = label || label1;
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
 		if (currentLabel == '头条') {
@@ -400,7 +406,6 @@ var globalObj = {
 		} else {
 			index = this.getLastIndex(config.direction)[0];
 		}
-		currentLabel = currentLabel == '撕逼头条'? '撕逼': currentLabel;
 		this.createScript(url + index + '&b=' + currentLabel + '&mode=' + (direction ? 'up' : 'down') + '&t=' + this.getLastIndex(direction)[1] + isJoke + '&callback=renderListCallback');
 	},
 	//
