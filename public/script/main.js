@@ -366,8 +366,7 @@ var globalObj = {
 		var self = this;
 		if (obj.length) {
 			var ul = document.createElement('ul'),
-				tempStr = '',
-				tempSibiStr = '';
+				tempStr = '';
 			ul.className = 'article';
 			var hasSibi = obj.some(function(item) {
 				return item.type == 'sibi';
@@ -409,20 +408,20 @@ var globalObj = {
 					if (sibi.pros_num < 20) {
 						sibi.pros_num = 20;
 					}
-					if (this.config.currentLabel == '撕逼头条') {
+					var isSibiLabel = this.config.currentLabel == '撕逼头条';
+					if (isSibiLabel) {
+						var isToday = (self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime));
 						tempStr += '<li class="spe sg-sibi sg-sibi-list"><a href="#sibi?content=' + sibi.content + '">';
-						if (self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime)) {
+						if (isToday) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
-							//sibiStyle(tempSibiStr);
-							//tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
-						} else {
-							tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
+						} else{
+							//tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
 					} else {
 						tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3>';
 					}
 					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="sg-chart sg-chart-mini"><div class="pros"></div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
-					tempStr += tempSibiStr + '</a></li>';
+					tempStr += '</a>' + (isToday && isSibiLabel)? '<div class="sg-sibi-prev">往期回顾</div>':'' + '</li>';
 				} else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
@@ -474,6 +473,10 @@ var globalObj = {
 		this.articleTime = new Date().getTime();
 		var baseUrl = 'http://10.134.24.229/discover_agent?h=' + this.uuid + '&cmd=getcontent&phone=1&url=';
 		this.createScript(baseUrl + location.hash.match(/http.*/)[0] + '&callback=renderArticleCallback');
+	},
+	//清空article
+	initArticle: function(){
+
 	},
 	//从当前列表页请求更多内容
 	moreList: function(change, direction, num, label) {
@@ -754,7 +757,7 @@ var globalObj = {
 			if (target.className == 'sg-return') {
 				history.back();
 			}
-			if(targetParent.parentNode.classList.contain('sg-sibi')) {
+			if(targetParent.parentNode.className == 'spe sg-sibi' || targetParent.parentNode.className == 'spe sg-sibi') {
 				self.channelChange('撕逼头条');
 			} else if (ifMask && target.tagName == 'IMG') {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
