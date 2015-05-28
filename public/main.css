@@ -1013,6 +1013,7 @@ ul.article .sg-sibi-list{
 }
 #photo-mask.sg-hide{
   z-index: -1;
+  display: none;
 }
 #photo-mask img{
   position: absolute;

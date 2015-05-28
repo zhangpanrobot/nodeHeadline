@@ -31,10 +31,10 @@ function sibiMedia(data) {
 	var str = '<div class="sg-list sg-sibi-media">';
 	var tempStr = '<ul class="article">';
 	var tempStr1 = '<ul class="article">';
-	tempStr += renderSibiMedia(pros[0]);
-	tempStr += renderSibiMedia(cons[0]);
-	tempStr1 += renderSibiMedia(pros[1]);
-	tempStr1 += renderSibiMedia(cons[1]);
+	tempStr += renderSibiMedia(pros[0], true);
+	tempStr += renderSibiMedia(cons[0], false);
+	tempStr1 += renderSibiMedia(pros[1], true);
+	tempStr1 += renderSibiMedia(cons[1], false);
 	tempStr += '</ul>';
 	tempStr1 += '</ul>';
 	return str + tempStr + tempStr1 + '</div>';
@@ -43,9 +43,9 @@ function sibiMedia(data) {
 function renderSibiMedia(obj, bool) {
 	var currentTime = globalObj.config.currentTime;
 	if (obj.image) {
-		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url(' + obj.image + ') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url(' + obj.image + ') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type '+ (bool? 'editor">绿方':'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	} else {
-		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type '+ (bool?'editor">绿方':'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	}
 }
 
@@ -217,7 +217,7 @@ var globalObj = {
 		//每个频道的内容及频道最后一次请求新数据的时间
 		listArray: {}
 	},
-	//复制Big图为背景图, 大图详情及撕B公用
+	//非hash跳转时
 	getBig: function() {
 
 	},
@@ -361,6 +361,7 @@ var globalObj = {
 	},
 	//渲染列表页
 	renderList: function(obj, change, direction) {
+		console.log(obj);
 		var section = this.eleData.sgList;
 		var self = this;
 		if (obj.length) {
@@ -667,12 +668,15 @@ var globalObj = {
 			localStorage.setItem('uuid', self.uuid = self.guid());
 		}
 		self.config.baseUrl = 'http://10.134.24.229/discover_agent?h=' + self.uuid + '&cmd=getlist&phone=1&count=20&lastindex='
-		if (!~location.href.indexOf('#article?s=')) {
-			localStorage.setItem('info', '');
-			self.moreList();
-		} else {
+		if (~location.href.indexOf('#article?s=')) {
 			self.renderArticle();
 			self.layerSwitch($('#article'), $('#container'));
+		} else if(~location.href.indexOf('#sibi?content')){
+			self.getsibi();
+			self.layerSwitch($('#article'), $('#container'));
+		} else {
+			localStorage.setItem('info', '');
+			self.moreList();
 		}
 		self.pingback('init', self.uuid, {
 			iconType: self.config.iconType,
@@ -920,6 +924,9 @@ var globalObj = {
 	showUp: function(num) {
 		var callbackMsg = $('#callback-msg');
 		num = num > 10 ? 10 : num;
+		if(num == 0) {
+			emptyElement($('.load-more'));
+		}
 		callbackMsg.innerText = arguments[0] ? '为您推荐' + num + '篇文章' : '暂无新推荐';
 		setTimeout(function() {
 			callbackMsg.style.opacity = '1';
