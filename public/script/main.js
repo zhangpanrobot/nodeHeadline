@@ -15,13 +15,13 @@ function showNewsNum(num) {
 }
 
 //撕逼头条两方样式
-function sibiStyle(ele, num_part, sum){
+function sibiStyle(ele, num_part, sum) {
 	//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
 	var chart = '<div class="sg-chart"><div class="pros"></div><div id="pros_support"></div><div id="cons_support"></div></div>';
 	var articleContainer = $('.sg-article-container');
 	articleContainer.innerHTML += chart;
-	setTimeout(function(){
-		$('.sg-chart', articleContainer).children[0].style.width = num_part/sum * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight/2 + 'px';
+	setTimeout(function() {
+		$('.sg-chart', articleContainer).children[0].style.width = num_part / sum * $('.sg-chart').offsetWidth - $('.sg-chart').offsetHeight / 2 + 'px';
 	}, 500);
 }
 
@@ -42,8 +42,8 @@ function sibiMedia(data) {
 
 function renderSibiMedia(obj, bool) {
 	var currentTime = globalObj.config.currentTime;
-	if(obj.image) {	
-		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url('+ obj.image +') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+	if (obj.image) {
+		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url(' + obj.image + ') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	} else {
 		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type hot">红方</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	}
@@ -56,6 +56,8 @@ function $(selector, context) {
 function $$(selector, context) {
 	return (context || document).querySelectorAll(selector);
 }
+
+
 
 function renderListCallback(data) {
 	return globalObj.renderListCallback(data);
@@ -95,7 +97,7 @@ function removeClass(ele, str) {
 
 function insertAfter(newEle, targetEle) {
 	var parentEle = targetEle.parentNode;
-	if( parentEle.lastChild == targetEle) {
+	if (parentEle.lastChild == targetEle) {
 		parentEle.appendChild(newEle);
 	} else {
 		parentEle.insertBefore(newEle, targetEle.nextSbling);
@@ -154,6 +156,8 @@ var imageLoaderManager = (function() {
 		load: load
 	};
 })();
+
+var meitiScroll;
 
 var globalObj = {
 	dbody: document.body,
@@ -214,7 +218,7 @@ var globalObj = {
 		listArray: {}
 	},
 	//复制Big图为背景图, 大图详情及撕B公用
-	getBig: function(){
+	getBig: function() {
 
 	},
 	loadMoreText: function(bool) {
@@ -249,17 +253,21 @@ var globalObj = {
 		}
 		return month + '-' + date + '  ' + hour + ':' + minute;
 	},
-	sibiDate: function(date){
+	sibiDate: function(date) {
 		var curDate = new Date(date);
 		return (1900 + curDate.getYear()) + '0' + (curDate.getMonth() + 1) + '' + curDate.getDate();
 	},
-	getsibi: function(date){
+	getsibi: function(date) {
 		var self = this;
 		//var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + self.sibiDate(self.config.currentTime) + '&callback=sibicallback';
 		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + 20150520 + '&callback=sibicallback';
 		this.createScript(baseUrl);
 	},
 	sibicallback: function(data) {
+		setTimeout(function() {
+			$('#container').className += ' noScroll sg-hide';
+		}, 0);
+
 		var self = this;
 		var article = self.eleData.article;
 		var articleContainer = $('.sg-article-container');
@@ -272,7 +280,18 @@ var globalObj = {
 		sibiStyle($('.big', article), sibi.pros_num, sibi.pros_num + sibi.cons_num);
 		articleContainer.innerHTML += '<div class=sg-chart-text><span class="sg-chart-text-pros">' + sibi.pros_title + '</span><span class="sg-chart-text-cons">' + sibi.cons_title + '</span></div>';
 		articleContainer.innerHTML += '<div class=sg-sibi-media-cantainer>' + sibiMedia(sibi) + '</div>';
-				
+		setTimeout(function() {
+			[].slice.call($$('.sg-sibi-media-cantainer .article')).forEach(function(item) {
+				item.style.width = $('.sg-sibi-media-cantainer').offsetWidth + 'px';
+			});
+			setTimeout(function() {
+				meitiScroll = new IScroll('.sg-sibi-media-cantainer', {
+					eventPassthrough: true,
+					scrollX: true,
+					scrollY: false
+				});
+			}, 200);
+		}, 400);
 	},
 	//三个大layer切换
 	layerSwitch: function(sup, sub) {
@@ -346,12 +365,13 @@ var globalObj = {
 		var self = this;
 		if (obj.length) {
 			var ul = document.createElement('ul'),
-				tempStr = '', tempSibiStr = '';
+				tempStr = '',
+				tempSibiStr = '';
 			ul.className = 'article';
-			var hasSibi = obj.some(function(item){
+			var hasSibi = obj.some(function(item) {
 				return item.type == 'sibi';
 			});
-			if(!hasSibi) {
+			if (!hasSibi) {
 				obj.push();
 			}
 			for (var i = 0; i < obj.length; i++) {
@@ -364,7 +384,7 @@ var globalObj = {
 					firstImg = img && img[0];
 				var tempImage = !!img;
 				if (this.config.currentLabel == '笑话') {
-					if(item.contents && item.contents.length) {
+					if (item.contents && item.contents.length) {
 						img = item.contents[1] && item.contents[1].img;
 						txt = item.contents[0].txt;
 					}
@@ -372,25 +392,25 @@ var globalObj = {
 				} else if (item.style == 'joke') {
 					var items = item.url_infos;
 					tempStr += '<li class="spe sg-joke"><h3>轻松一刻</h3>';
-					if(items && items.length) {
-						items.forEach(function(item, idx){
+					if (items && items.length) {
+						items.forEach(function(item, idx) {
 							tempStr += '<h2 class="sg-text">' + item.title + '</h2><p>' + item.content + '</p>';
 						});
 					}
 					tempStr += '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span></div></li>';
-				} else if(item.type == 'sibi'){
+				} else if (item.type == 'sibi') {
 					sibi = item.sibi;
 					sibi.pros_num = 20;
 					sibi.cons_num = 80;
 					sibi.pros_title = '没有爱的婚姻不值得留恋';
 					sibi.cons_title = '婚姻是责任与爱无关';
 					//过小时样式展示问题
-					if(sibi.pros_num < 20) {
+					if (sibi.pros_num < 20) {
 						sibi.pros_num = 20;
 					}
-					if(this.config.currentLabel == '撕逼头条') {
+					if (this.config.currentLabel == '撕逼头条') {
 						tempStr += '<li class="spe sg-sibi sg-sibi-list"><a href="#sibi?content=' + sibi.content + '">';
-						if(self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime)) {
+						if (self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime)) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
 							//sibiStyle(tempSibiStr);
 							//tempSibiStr += '<div class="sg-chart"><div class="pros"></div></div>';
@@ -402,7 +422,7 @@ var globalObj = {
 					}
 					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="sg-chart sg-chart-mini"><div class="pros"></div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
 					tempStr += tempSibiStr + '</a></li>';
-				}else if (!tempImage) { //无图
+				} else if (!tempImage) { //无图
 					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
 				} else if (item.style == 'three') { //三图平均
 					tempStr += '<li class="spe"> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
@@ -459,7 +479,7 @@ var globalObj = {
 		var config = this.config;
 		var index;
 		var isJoke = '';
-		var label1 = decodeURIComponent(config.currentLabel) == '撕逼头条'? '撕逼': decodeURIComponent(config.currentLabel);
+		var label1 = decodeURIComponent(config.currentLabel) == '撕逼头条' ? '撕逼' : decodeURIComponent(config.currentLabel);
 		currentLabel = label || label1;
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
@@ -677,7 +697,7 @@ var globalObj = {
 			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
 			if (!(currentLabelList && currentLabelList.length)) {
 				self.moreList(true);
-			} else if (config.currentTime - config.listArray[config.currentLabel].time > 60*3*1000) { //时间超三分钟
+			} else if (config.currentTime - config.listArray[config.currentLabel].time > 60 * 3 * 1000) { //时间超三分钟
 				self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
 			} else {
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
@@ -734,7 +754,7 @@ var globalObj = {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
 				photoMask.classList.toggle('sg-hide');
 				var newImage = target.cloneNode(true);
-				if (target.naturalHeight > window.innerHeight && target.naturalHeight/target.naturalWidth > window.innerHeight/window.innerWidth) {
+				if (target.naturalHeight > window.innerHeight && target.naturalHeight / target.naturalWidth > window.innerHeight / window.innerWidth) {
 					newImage.style.bottom = 'auto';
 				}
 				photoMask.appendChild(newImage);
@@ -777,7 +797,7 @@ var globalObj = {
 				//TOFIX: 第一眼所花时间过长
 				article.style.cssText = 'height:100%;min-height:' + viewHeight + 'px;padding: 0;z-index: 100;';
 				articleContainer.style.minHeight = viewHeight + 'px';
-				if(isArticle) {
+				if (isArticle) {
 					self.articleStartTime = new Date().getTime();
 					self.readed = false;
 				}
@@ -787,13 +807,13 @@ var globalObj = {
 					if (encodeURIComponent($$('.article a')[i].href) == encodeURIComponent(e.newURL)) {
 						var currentTag = $$('.article a')[i];
 						currentTag.className = 'visitedLink';
-						var cloneTarget = isArticle? currentTag.children[0]: currentTag.children[1];
+						var cloneTarget = isArticle ? currentTag.children[0] : currentTag.children[1];
 						if (cloneTarget.className == 'big' && !article.querySelector('big')) {
 							//TODO: add big picture
 							article.children[0].insertBefore(cloneTarget.cloneNode(true), articleContainer);
 							isArticle && ($('.big img', article).style.maxWidth = '200%');
 						}
-						if(isArticle) articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
+						if (isArticle) articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
 					}
 				}
 				isArticle && articleRenderSet();
@@ -873,9 +893,9 @@ var globalObj = {
 	},
 	scrollUpdateDelay: function(e) {
 		var self = this;
-		if($('#photo-mask').className == ''){
+		if ($('#photo-mask').className == '') {
 			e.preventDefault && e.preventDefault();
-			e.returnValue=false;
+			e.returnValue = false;
 			e.stopPropagation && e.stopPropagation();
 			return false;
 		}
@@ -959,6 +979,7 @@ var globalObj = {
 				container = eleData.container,
 				pulldownMsgIcon = $('#pulldown-msg i'),
 				pulldownMsgText = $('#pulldown-msg span');
+
 			function allowToPull(e) {
 				return document.body.scrollTop == 0 && (e.target.parentNode.nodeName !== 'LI' || !e.target.hasAttribute('data-tag'));
 			}
@@ -966,7 +987,7 @@ var globalObj = {
 				touchY = e.touches[0].pageY;
 			});
 			container.addEventListener('touchmove', function(e) {
-			if(self.config.currentLabel == '撕逼头条') return;
+				if (self.config.currentLabel == '撕逼头条') return;
 				var pageY = e.touches[0].pageY;
 				if (allowToPull(e)) {
 					if (pageY - touchY > 100) {
@@ -991,7 +1012,7 @@ var globalObj = {
 				}
 			});
 			container.addEventListener('touchend', function(e) {
-			if(self.config.currentLabel == '撕逼头条') return;
+				if (self.config.currentLabel == '撕逼头条') return;
 				var opeInfo = self.opeInfo;
 				if (allowToPull(e)) {
 					opeInfo.change = false;

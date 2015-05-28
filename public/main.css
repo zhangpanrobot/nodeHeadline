@@ -295,10 +295,10 @@ ul.article li{
 }
 .opposition .pros>span{
   float: right;
-  margin-right: 50px;
+  margin-right: 20%;
 }
 .opposition .cons>span{
-  margin-left: 50px;
+  margin-left: 20%;
 }
 .opposition .cons{
 
@@ -938,8 +938,16 @@ figure{
 .sg-sibi-media-cantainer{
   overflow: hidden;
   width: 100%;
+  background: url(./img/meiti.png) left top no-repeat;
+  -webkit-background-size: 20px;
+  background-size: 20px;
+}
+.sg-sibi-media-cantainer .spe a{
+  margin-top: -5px;
 }
 .sg-sibi-media-cantainer .sg-list{
+  white-space: nowrap;
+  display: inline-block;
 }
 .sg-sibi-media ul{
   display: inline-block;
