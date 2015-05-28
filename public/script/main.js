@@ -218,8 +218,10 @@ var globalObj = {
 		listArray: {}
 	},
 	//非hash跳转时
-	getBig: function() {
-
+	clearBig: function() {
+		[].slice.call($$('#article .big')).forEach(function(item){
+			removeElement(item);
+		});
 	},
 	loadMoreText: function(bool) {
 		$('.load-more').innerHTML = bool ? '<span>正在加载...</span>' : '';
@@ -271,8 +273,15 @@ var globalObj = {
 		var self = this;
 		var article = self.eleData.article;
 		var articleContainer = $('.sg-article-container');
-		console.log(data);
 		var sibi = data.app_cmd[0].cmd[0].sibi;
+		var big = $('.big', article);
+		if(!big) {
+			big = document.createElement('div');
+			big.className = 'big';
+			big.innerHTML = '<img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div>';
+			$('.sg-turn-back').classList.add('sg-turn-back-big');
+		}
+		$('.sg-news').insertBefore(big, articleContainer);
 		sibi.pros_num = 20;
 		sibi.cons_num = 80;
 		articleContainer.innerHTML += '<p class="sg-chart-intro">' + sibi.intro + '</p>';
@@ -361,7 +370,6 @@ var globalObj = {
 	},
 	//渲染列表页
 	renderList: function(obj, change, direction) {
-		console.log(obj);
 		var section = this.eleData.sgList;
 		var self = this;
 		if (obj.length) {
@@ -398,6 +406,14 @@ var globalObj = {
 						});
 					}
 					tempStr += '<div class="sg-more-joke">去查看更多笑话 <span>&gt;</span></div></li>';
+				} else if (!tempImage && item.type !== 'sibi') { //无图
+					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
+				} else if (item.style == 'three') { //三图平均
+					tempStr += '<li class="spe"> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
+				} else if (item.style == 'big') { //大图
+					tempStr += '<li class="spe"> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="big"> <img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
+				} else if (currentLabel == '美女') {
+					tempStr += '<li class="spe sg-girl"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
 				} else if (item.type == 'sibi') {
 					sibi = item.sibi;
 					sibi.pros_num = 20;
@@ -408,7 +424,7 @@ var globalObj = {
 					if (sibi.pros_num < 20) {
 						sibi.pros_num = 20;
 					}
-					var isSibiLabel = this.config.currentLabel == '撕逼头条';
+					var isSibiLabel = this.config.currentLabel == '撕逼';
 					if (isSibiLabel) {
 						var isToday = (self.sibiDate(sibi.found_time) == self.sibiDate(self.config.currentTime));
 						tempStr += '<li class="spe sg-sibi sg-sibi-list"><a href="#sibi?content=' + sibi.content + '">';
@@ -421,15 +437,7 @@ var globalObj = {
 						tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3>';
 					}
 					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="sg-chart sg-chart-mini"><div class="pros"></div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
-					tempStr += '</a>' + (isToday && isSibiLabel)? '<div class="sg-sibi-prev">往期回顾</div>':'' + '</li>';
-				} else if (!tempImage) { //无图
-					tempStr += '<li class="spe"><a href=#article?s=' + url + '&label=' + currentLabel + '>' + '<h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><span class="count spe">' + (item.type ? '<i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i>' : '') + (item.source ? ('<i class="source">' + item.source + '</i>') : '') + '<i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i></span></a></li>';
-				} else if (item.style == 'three') { //三图平均
-					tempStr += '<li class="spe"> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="three"> <ul> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[1].name + '"></li> <li style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + img[2].name + '"></li> </ul> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
-				} else if (item.style == 'big') { //大图
-					tempStr += '<li class="spe"> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="big"> <img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"> </div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count spe"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time"> ' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + ' </i> </span> </a> </li>';
-				} else if (currentLabel == '美女') {
-					tempStr += '<li class="spe sg-girl"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
+					tempStr += '</a>' + ((isToday && isSibiLabel)? '<div class="sg-sibi-prev">往期回顾</div>':'') + '</li>';
 				} else {
 					tempStr += '<li> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="thumb" style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i> </span> </a> </li>';
 				}
@@ -483,7 +491,7 @@ var globalObj = {
 		var config = this.config;
 		var index;
 		var isJoke = '';
-		var label1 = decodeURIComponent(config.currentLabel) == '撕逼头条' ? '撕逼' : decodeURIComponent(config.currentLabel);
+		var label1 = decodeURIComponent(config.currentLabel);
 		currentLabel = label || label1;
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
@@ -704,7 +712,7 @@ var globalObj = {
 			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
 			if (!(currentLabelList && currentLabelList.length)) {
 				self.moreList(true);
-			} else if (config.currentTime - config.listArray[config.currentLabel].time > 60 * 3 * 1000) { //时间超三分钟
+			} else if (config.currentTime - config.listArray[config.currentLabel].time > 60 * 2 * 1000) { //时间超三分钟
 				self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
 			} else {
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
@@ -758,7 +766,7 @@ var globalObj = {
 				history.back();
 			}
 			if(targetParent.parentNode.className == 'spe sg-sibi' || targetParent.parentNode.className == 'spe sg-sibi') {
-				self.channelChange('撕逼头条');
+				self.channelChange('撕逼');
 			} else if (ifMask && target.tagName == 'IMG') {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
 				photoMask.classList.toggle('sg-hide');
@@ -802,6 +810,7 @@ var globalObj = {
 			var viewHeight = self.viewHeight;
 			var isArticle = !!~e.newURL.indexOf('#article?s');
 			var isSibi = !!~e.newURL.indexOf('#sibi?content');
+			self.clearBig();
 			if (isArticle || isSibi) {
 				//TOFIX: 第一眼所花时间过长
 				article.style.cssText = 'height:100%;min-height:' + viewHeight + 'px;padding: 0;z-index: 100;';
@@ -816,10 +825,11 @@ var globalObj = {
 					if (encodeURIComponent($$('.article a')[i].href) == encodeURIComponent(e.newURL)) {
 						var currentTag = $$('.article a')[i];
 						currentTag.className = 'visitedLink';
-						var cloneTarget = isArticle ? currentTag.children[0] : currentTag.children[1];
+						var cloneTarget = isArticle ? currentTag.children[0] : $('.big', currentTag);
 						if (cloneTarget.className == 'big' && !article.querySelector('big')) {
 							//TODO: add big picture
 							article.children[0].insertBefore(cloneTarget.cloneNode(true), articleContainer);
+							$('.sg-turn-back').classList.add('sg-turn-back-big');
 							isArticle && ($('.big img', article).style.maxWidth = '200%');
 						}
 						if (isArticle) articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
@@ -827,6 +837,7 @@ var globalObj = {
 				}
 				isArticle && articleRenderSet();
 				isSibi && self.getsibi(location.hash.split('=')[1]);
+				isSibi && emptyElement(articleContainer);
 				article.scrollIntoView();
 			} else {
 				if (~e.oldURL.indexOf('#article?s') || ~e.oldURL.indexOf('#sibi?content')) {
@@ -835,9 +846,6 @@ var globalObj = {
 					emptyStyle(container);
 					removeClass(container, 'sg-hide');
 					document.body.scrollTop = self.scrollTop;
-					// setTimeout(function() {
-					// 	document.body.scrollTop = self.scrollTop;
-					// }, 0);
 					addClass(article, 'sg-hide');
 					emptyStyle(article);
 					emptyElement(articleContainer);
@@ -999,7 +1007,7 @@ var globalObj = {
 				touchY = e.touches[0].pageY;
 			});
 			container.addEventListener('touchmove', function(e) {
-				if (self.config.currentLabel == '撕逼头条') return;
+				if (self.config.currentLabel == '撕逼') return;
 				var pageY = e.touches[0].pageY;
 				if (allowToPull(e)) {
 					if (pageY - touchY > 100) {
@@ -1024,7 +1032,7 @@ var globalObj = {
 				}
 			});
 			container.addEventListener('touchend', function(e) {
-				if (self.config.currentLabel == '撕逼头条') return;
+				if (self.config.currentLabel == '撕逼') return;
 				var opeInfo = self.opeInfo;
 				if (allowToPull(e)) {
 					opeInfo.change = false;

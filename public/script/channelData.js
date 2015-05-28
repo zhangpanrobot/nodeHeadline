@@ -4,8 +4,8 @@ var editData = [{
     eng: 'Headlines',
     val: true
 }, {
-    name: '撕逼头条',
-    attr: '撕逼',
+    name: '撕逼',
+    abbr: '撕逼头条',
     eng: 'Catfight',
     val: true
 }, {
