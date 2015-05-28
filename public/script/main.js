@@ -754,7 +754,9 @@ var globalObj = {
 			if (target.className == 'sg-return') {
 				history.back();
 			}
-			if (ifMask && target.tagName == 'IMG') {
+			if(targetParent.parentNode.classList.contain('sg-sibi')) {
+				self.channelChange('撕逼头条');
+			} else if (ifMask && target.tagName == 'IMG') {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
 				photoMask.classList.toggle('sg-hide');
 				var newImage = target.cloneNode(true);
@@ -951,8 +953,8 @@ var globalObj = {
 	updateGeted: function(data) {
 		console.trace();
 		var opeInfo = this.opeInfo;
-		data = data.app_cmd[0].cmd[0].news_app_info[0];
-		if (data.update_number) {
+		data = data.app_cmd[0].cmd[0].news_app_info && data.app_cmd[0].cmd[0].news_app_info[0];
+		if (data && data.update_number) {
 			opeInfo.change = false;
 			opeInfo.direction = true;
 			opeInfo.num = data.update_number;
@@ -962,7 +964,7 @@ var globalObj = {
 			this.pingback('updateFail', this.uuid, {
 				currentLabel: this.config.currentLabel
 			});
-			this.showUp();
+			this.showUp(0);
 			setTimeout(this.pullDownStyle, 300);
 		}
 		this.toGetUpdate = false;
