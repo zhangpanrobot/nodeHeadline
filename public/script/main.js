@@ -1,19 +1,3 @@
-//TODO: 第一次进频道或者下拉刷新时, 或者频道过期后再切回来, 都显示更新数量
-function showNewsNum(num) {
-	var callbackMsg = $('#callback-msg');
-	num = num > 10 ? 10 : num;
-	callbackMsg.innerText = arguments[0] ? '为您推荐' + num + '篇文章' : '暂无新推荐';
-	setTimeout(function() {
-		callbackMsg.style.opacity = '1';
-	}, 500);
-	setTimeout(function() {
-		callbackMsg.style.opacity = '0';
-		setTimeout(function() {
-			callbackMsg.innerText = '暂无新推荐';
-		}, 500);
-	}, 1500);
-}
-
 //撕逼头条两方样式
 function sibiStyle(ele, num_part, sum) {
 	//红色全宽底, 绿色半宽顶, 一条与背影色相同的线
@@ -43,9 +27,9 @@ function sibiMedia(data) {
 function renderSibiMedia(obj, bool) {
 	var currentTime = globalObj.config.currentTime;
 	if (obj.image) {
-		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url(' + obj.image + ') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type '+ (bool? 'editor">绿方':'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+		return '<li><a href=#article?s=' + obj.name + '><div class="thumb" style="background: url(' + obj.image + ') 50% 0% / cover no-repeat transparent;" data-src=""></div><h2 class="">' + obj.title + '</h2><span class="count spe"><i class="type ' + (bool ? 'editor">绿方' : 'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	} else {
-		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type '+ (bool?'editor">绿方':'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
+		return '<li class="spe"><a href=#article?s=' + obj.name + '><h2 class="long-line">' + obj.title + '</h2><span class="count spe"><i class="type ' + (bool ? 'editor">绿方' : 'hot">红方') + '</i>' + (obj.source ? ('<i class="source">' + obj.source.name + '</i>') : '') + '<i class="time">' + (obj.publish_time ? globalObj.timeFormat(currentTime - obj.publish_time * 1000) : '') + '</i></span></a></li>';
 	}
 }
 
@@ -56,8 +40,6 @@ function $(selector, context) {
 function $$(selector, context) {
 	return (context || document).querySelectorAll(selector);
 }
-
-
 
 function renderListCallback(data) {
 	return globalObj.renderListCallback(data);
@@ -157,8 +139,6 @@ var imageLoaderManager = (function() {
 	};
 })();
 
-var meitiScroll;
-
 var globalObj = {
 	dbody: document.body,
 	scrollTop: 0,
@@ -219,7 +199,7 @@ var globalObj = {
 	},
 	//非hash跳转时
 	clearBig: function() {
-		[].slice.call($$('#article .big')).forEach(function(item){
+		[].slice.call($$('#article .big')).forEach(function(item) {
 			removeElement(item);
 		});
 	},
@@ -261,8 +241,7 @@ var globalObj = {
 	},
 	getsibi: function(date) {
 		var self = this;
-		//var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + self.sibiDate(self.config.currentTime) + '&callback=sibicallback';
-		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + 20150520 + '&callback=sibicallback';
+		var baseUrl = this.config.domain + '?phone=1&cmd=getsibi&date=' + date + '&callback=sibicallback';
 		this.createScript(baseUrl);
 	},
 	sibicallback: function(data) {
@@ -275,15 +254,16 @@ var globalObj = {
 		var articleContainer = $('.sg-article-container');
 		var sibi = data.app_cmd[0].cmd[0].sibi;
 		var big = $('.big', article);
-		if(!big) {
-			big = document.createElement('div');
-			big.className = 'big';
-			big.innerHTML = '<img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div>';
+		if (!big) {
+			var sibiLink = document.createElement('a');
+			sibiLink.href = '#article?s=' + encodeURIComponent(sibi.url);
+			sibiLink.innerHTML = '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div>';
 			$('.sg-turn-back').classList.add('sg-turn-back-big');
 		}
-		$('.sg-news').insertBefore(big, articleContainer);
-		sibi.pros_num = 20;
-		sibi.cons_num = 80;
+		$('.sg-news').insertBefore(sibiLink, articleContainer);
+		// sibi.pros_num = 20;
+		// sibi.cons_num = 80;
+		console.log(sibi);
 		articleContainer.innerHTML += '<p class="sg-chart-intro">' + sibi.intro + '</p>';
 		//正反方对比
 		sibiStyle($('.big', article), sibi.pros_num, sibi.pros_num + sibi.cons_num);
@@ -291,10 +271,10 @@ var globalObj = {
 		articleContainer.innerHTML += '<div class=sg-sibi-media-cantainer>' + sibiMedia(sibi) + '</div>';
 		setTimeout(function() {
 			[].slice.call($$('.sg-sibi-media-cantainer .article')).forEach(function(item) {
-				item.style.width = $('.sg-sibi-media-cantainer').offsetWidth + 'px';
+				item.style.width = $('.sg-sibi-media-cantainer').offsetWidth - 40 + 'px';
 			});
 			setTimeout(function() {
-				meitiScroll = new IScroll('.sg-sibi-media-cantainer', {
+				new IScroll('.sg-sibi-media-cantainer', {
 					eventPassthrough: true,
 					scrollX: true,
 					scrollY: false
@@ -326,7 +306,8 @@ var globalObj = {
 				self.config.currentLabel = '头条';
 				delete self.config.listArray[currentLabel];
 				emptyElement(self.eleData.sgList);
-				self.moreList(true, false, undefined, '头条');
+				// self.moreList(true, false, undefined, '头条');
+				self.moreList(true, false);
 				self.eleData.container.style.minHeight = self.viewHeight + 'px';
 				currentDeleted = true;
 			}
@@ -416,10 +397,10 @@ var globalObj = {
 					tempStr += '<li class="spe sg-girl"><h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2><div class="big"><img class="' + (firstImg.width > firstImg.height ? "widthImg" : "heightImg") + '" src="' + img[0].name + '" alt="' + item.title + '"></div></li>';
 				} else if (item.type == 'sibi') {
 					sibi = item.sibi;
-					sibi.pros_num = 20;
-					sibi.cons_num = 80;
-					sibi.pros_title = '没有爱的婚姻不值得留恋';
-					sibi.cons_title = '婚姻是责任与爱无关';
+					// sibi.pros_num = 20;
+					// sibi.cons_num = 80;
+					// sibi.pros_title = '没有爱的婚姻不值得留恋';
+					// sibi.cons_title = '婚姻是责任与爱无关';
 					//过小时样式展示问题
 					if (sibi.pros_num < 20) {
 						sibi.pros_num = 20;
@@ -430,14 +411,14 @@ var globalObj = {
 						tempStr += '<li class="spe sg-sibi sg-sibi-list"><a href="#sibi?content=' + sibi.content + '">';
 						if (isToday) {
 							tempStr += '<div class="sg-sibi-current">今日撕逼</div>';
-						} else{
+						} else {
 							//tempStr += '<div class="sg-sibi-prev">往期回顾</div>';
 						}
 					} else {
 						tempStr += '<li class="spe sg-sibi"><h3>今日撕逼</h3>';
 					}
 					tempStr += '<div class="big"><img src="' + sibi.image + '" alt="' + sibi.title + '"><div class="caption">' + sibi.name + '</div></div><div class="sg-chart sg-chart-mini"><div class="pros"></div></div><div class="opposition"><div class="pros"><span>' + sibi.pros_title + '</span></div><div class="cons"><span>' + sibi.cons_title + '</span></div></div>';
-					tempStr += '</a>' + ((isToday && isSibiLabel)? '<div class="sg-sibi-prev">往期回顾</div>':'') + '</li>';
+					tempStr += '</a>' + ((isToday && isSibiLabel) ? '<div class="sg-sibi-prev">往期回顾</div>' : '') + '</li>';
 				} else {
 					tempStr += '<li> <a href=#article?s=' + url + '&label=' + currentLabel + '> ' + (tempImage ? (' <div class="thumb" style="background: rgb(224, 224, 224) url(./public/img/default.png) no-repeat center center;background-size: 35px 30px;" data-src="' + firstImg.name + '"></div> ') : '') + ' <h2 class="' + (tempImage ? '' : 'long-line') + '">' + item.title + '</h2> <span class="count"> ' + (item.type ? ' <i class="type ' + item.type + '">' + this.keyWord[item.type] + '</i> ' : '') + (item.source ? (' <i class="source">' + item.source + '</i> ') : '') + ' <i class="time">' + (item.publish_time ? this.timeFormat(currentTime - item.publish_time * 1000) : '') + '</i> </span> </a> </li>';
 				}
@@ -483,16 +464,19 @@ var globalObj = {
 		this.createScript(baseUrl + location.hash.match(/http.*/)[0] + '&callback=renderArticleCallback');
 	},
 	//清空article
-	initArticle: function(){
+	initArticle: function() {
 
 	},
 	//从当前列表页请求更多内容
-	moreList: function(change, direction, num, label) {
+	/*
+	 **direction, 更新内容的方向, true为请求下拉请求最新新闻
+	 **num 下拉请求指定的新闻条数
+	 */
+	moreList: function(direction, num) {
 		var config = this.config;
 		var index;
 		var isJoke = '';
-		var label1 = decodeURIComponent(config.currentLabel);
-		currentLabel = label || label1;
+		var currentLabel = decodeURIComponent(config.currentLabel);
 		this.listTime = new Date().getTime();
 		url = num ? config.baseUrl.replace(/count=20/, 'count=' + num) : config.baseUrl;
 		if (currentLabel == '头条') {
@@ -513,6 +497,7 @@ var globalObj = {
 		//TOFIX: 数据请求失败情况
 		try {
 			urls = data.app_cmd[0].cmd[0].user_recomm_info[0].url_infos;
+			this.config.currentTime = data.timestamp * 1000;
 			this.pingback('listAllUrl', this.uuid, {
 				time: new Date().getTime() - this.listTime,
 				currentLabel: config.currentLabel
@@ -520,6 +505,7 @@ var globalObj = {
 		} catch (e) {
 			//TOFIX: 无数据特殊处理; 两种情况, 上拉或者下拉无数据返回(暂无新数据或没有更多咯)
 			emptyStyle($('#pulldown-msg'));
+			this.config.currentTime = this.config.currentTime;
 			emptyStyle(this.eleData.sgList);
 			return this.showUp(0);
 		}
@@ -641,7 +627,7 @@ var globalObj = {
 			var renderObj = currentLabelList[0].length < 10 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
 			self.renderList(renderObj, true);
 		} else {
-			self.moreList(true);
+			self.moreList();
 		}
 	},
 	init: function() {
@@ -682,7 +668,7 @@ var globalObj = {
 		if (~location.href.indexOf('#article?s=')) {
 			self.renderArticle();
 			self.layerSwitch($('#article'), $('#container'));
-		} else if(~location.href.indexOf('#sibi?content')){
+		} else if (~location.href.indexOf('#sibi?content')) {
 			self.getsibi();
 			self.layerSwitch($('#article'), $('#container'));
 		} else {
@@ -711,8 +697,8 @@ var globalObj = {
 			config.listArray[config.currentLabel] = config.listArray[config.currentLabel] || {};
 			currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
 			if (!(currentLabelList && currentLabelList.length)) {
-				self.moreList(true);
-			} else if (config.currentTime - config.listArray[config.currentLabel].time > 60 * 2 * 1000) { //时间超三分钟
+				self.moreList();
+			} else if (config.currentTime - config.listArray[config.currentLabel].time > (60 * 2 * 1000)) { //时间超三分钟
 				self.getUpdate(self.config.currentLabel, self.getLastIndex(true)[0]);
 			} else {
 				var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
@@ -765,7 +751,7 @@ var globalObj = {
 			if (target.className == 'sg-return') {
 				history.back();
 			}
-			if(targetParent.parentNode.className == 'spe sg-sibi' || targetParent.parentNode.className == 'spe sg-sibi') {
+			if (targetParent.parentNode.className == 'spe sg-sibi' || targetParent.parentNode.className == 'spe sg-sibi') {
 				self.channelChange('撕逼');
 			} else if (ifMask && target.tagName == 'IMG') {
 				$('#photo-mask img') && removeElement($('#photo-mask img'));
@@ -804,7 +790,7 @@ var globalObj = {
 					url: self.url
 				});
 			}, 2000);
-			!(articleContainer.children[3] && articleContainer.children[3].innerHTML) && self.renderArticle();
+			(!(articleContainer.children[3] && articleContainer.children[3].innerHTML) || (articleContainer.children[3] && articleContainer.children[3].className == 'sg-sibi-media-cantainer')) && self.renderArticle();
 		}
 		window.addEventListener('hashchange', function(e) {
 			var viewHeight = self.viewHeight;
@@ -821,16 +807,18 @@ var globalObj = {
 				}
 				//edit.style.height = viewHeight + 'px';
 				self.scrollTop = document.body.scrollTop;
-				for (var i = $$('.article a').length - 1; i >= 0; i--) {
+				for (var i = $$('.sg-list .article a').length - 1; i >= 0; i--) {
 					if (encodeURIComponent($$('.article a')[i].href) == encodeURIComponent(e.newURL)) {
 						var currentTag = $$('.article a')[i];
 						currentTag.className = 'visitedLink';
 						var cloneTarget = isArticle ? currentTag.children[0] : $('.big', currentTag);
-						if (cloneTarget.className == 'big' && !article.querySelector('big')) {
+						if (cloneTarget.className == 'big' && !article.querySelector('big') && isArticle) {
 							//TODO: add big picture
 							article.children[0].insertBefore(cloneTarget.cloneNode(true), articleContainer);
 							$('.sg-turn-back').classList.add('sg-turn-back-big');
-							isArticle && ($('.big img', article).style.maxWidth = '200%');
+							$('.big img', article).style.maxWidth = '200%';
+						} else {
+							$('.sg-turn-back').classList.remove('sg-turn-back-big');
 						}
 						if (isArticle) articleContainer.innerHTML = '</span><h1><span>' + currentTag.querySelector('h2').innerText + '</span></h1><h2>' + (currentTag.querySelector('.source') ? '<span class="source">' + currentTag.querySelector('.source').innerText + '</span>' : '') + '<span class="time"></span></h2>';
 					}
@@ -856,7 +844,7 @@ var globalObj = {
 						time: +new Date().getTime() - (+self.articleStartTime)
 					});
 					if (!$('.sg-list').textContent) {
-						self.moreList(true, false, undefined, '头条');
+						self.moreList();
 						self.eleData.container.minHeight = self.viewHeight + 'px';
 					}
 					if (article.children[0].className == 'big') {
@@ -903,7 +891,7 @@ var globalObj = {
 			opeInfo.change = false;
 			opeInfo.direction = false;
 			opeInfo.num = 0;
-			this.moreList(false);
+			this.moreList();
 		}
 		this.scrollTime = new Date().getTime();
 		$('#toTop').style.display = scrollTop > 800 ? 'block' : 'none';
@@ -937,7 +925,8 @@ var globalObj = {
 	showUp: function(num) {
 		var callbackMsg = $('#callback-msg');
 		num = num > 10 ? 10 : num;
-		if(num == 0) {
+		console.log(num);
+		if (num == 0) {
 			emptyElement($('.load-more'));
 		}
 		callbackMsg.innerText = arguments[0] ? '为您推荐' + num + '篇文章' : '暂无新推荐';
@@ -963,29 +952,45 @@ var globalObj = {
 	},
 	updateGeted: function(data) {
 		console.trace();
-		var opeInfo = this.opeInfo;
+		var self = this;
+		var opeInfo = self.opeInfo;
+		var config = self.config;
 		data = data.app_cmd[0].cmd[0].news_app_info && data.app_cmd[0].cmd[0].news_app_info[0];
 		if (data && data.update_number) {
 			opeInfo.change = false;
 			opeInfo.direction = true;
 			opeInfo.num = data.update_number;
 			var refreshNum = data.update_number > 10 ? 10 : data.update_number;
-			this.moreList(false, true, refreshNum);
+			self.moreList(true, refreshNum);
 		} else {
-			this.pingback('updateFail', this.uuid, {
-				currentLabel: this.config.currentLabel
+			self.pingback('updateFail', self.uuid, {
+				currentLabel: self.config.currentLabel
 			});
-			this.showUp(0);
-			setTimeout(this.pullDownStyle, 300);
+			self.showUp(0);
+			if (self.eleData.sgList.innerHTML == '') {
+				var currentLabelList = config.listArray[config.currentLabel] && config.listArray[config.currentLabel].data;
+				if (!(currentLabelList && currentLabelList.length)) {
+					self.moreList();
+				} else {
+					var renderObj = currentLabelList[0].length < 20 ? currentLabelList[0].concat(currentLabelList[1]) : currentLabelList[0];
+					self.renderList(renderObj, true);
+				}
+			}
+			setTimeout(self.pullDownStyle, 300);
 		}
-		this.toGetUpdate = false;
+		self.toGetUpdate = false;
 	},
 	getLastIndex: function(bool) { //true时取最大值
 		//注意, 这里是引用值, 直接用slice会改变原有对象
+		var currentLabel = this.config.currentLabel;
 		var currentList = JSON.parse(JSON.stringify(this.config.listArray[this.config.currentLabel].data || ({})));
 		if (currentList.length) {
 			var currentItem = bool ? currentList.shift().shift() : currentList.pop().pop();
-			return [currentItem.index, currentItem.publish_time];
+			if(currentLabel == '撕逼') {
+				return [currentItem.sibi.index, currentItem.sibi.found_time];
+			} else {
+				return [currentItem.index, currentItem.publish_time];
+			}
 		} else {
 			return [undefined, 0];
 		}
